@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="purple_200">#FFBB86FC</color>
+    <color name="purple_500">#FF6200EE</color>
+    <color name="purple_700">#FF3700B3</color>
+    <color name="teal_200">#FF03DAC5</color>
+    <color name="teal_700">#FF018786</color>
+    <color name="black">#FF000000</color>
+    <color name="white">#FFFFFFFF</color>
+
+    <!-- Widget Theme Colors (Light Mode) -->
+    <color name="widget_bg">#FFF8FAFC</color>
+    <color name="widget_border">#FFE2E8F0</color>
+    <color name="widget_card_bg">#FFFFFFFF</color>
+    <color name="widget_text_primary">#FF0F172A</color>
+    <color name="widget_text_secondary">#FF475569</color>
+    <color name="widget_text_muted">#FF64748B</color>
+    <color name="widget_chip_bg">#FFE0F2FE</color>
+    <color name="widget_chip_text">#FF0284C7</color>
+    <color name="widget_btn_bg">#FFF1F5F9</color>
+    <color name="widget_download_accent">#FF0284C7</color>
+    <color name="widget_upload_accent">#FF7C3AED</color>
+</resources>

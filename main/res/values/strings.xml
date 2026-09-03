@@ -1,0 +1,10 @@
+<resources>
+    <string name="app_name">Net Speed Indicator</string>
+    <string name="notification_channel_name">Live Speed Indicator</string>
+    <string name="notification_channel_desc">Real-time network upload and download speed promoted notification</string>
+    <string name="daily_summary_channel_name">Daily Data Usage Summary</string>
+    <string name="daily_summary_channel_desc">Daily summary notification of total data consumed across Wi-Fi and Cellular networks.</string>
+    <string name="widget_name">Net Speed Widget</string>
+    <string name="widget_description">Live network speed, active connection, and today\'s data usage on your home screen.</string>
+    <string name="tile_name">Net Speed</string>
+</resources>

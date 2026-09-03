@@ -1,0 +1,532 @@
+<?xml version="1.0" ?>
+<SmellBaseline>
+  <ManuallySuppressedIssues/>
+  <CurrentIssues>
+    <ID>ComplexCondition:BootReceiver.kt$BootReceiver$action == Intent.ACTION_BOOT_COMPLETED || action == Intent.ACTION_LOCKED_BOOT_COMPLETED || action == Intent.ACTION_MY_PACKAGE_REPLACED || action == "android.intent.action.QUICKBOOT_POWERON" || action == "com.htc.intent.action.QUICKBOOT_POWERON"</ID>
+    <ID>CyclomaticComplexMethod:DataUsageAnalyticsCard.kt$@Composable fun DataUsageAnalyticsCard( modifier: Modifier = Modifier )</ID>
+    <ID>CyclomaticComplexMethod:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$@Synchronized fun createSpeedIcon( snapshot: SpeedSnapshot, displayMode: DisplayMode, speedUnit: SpeedUnit, colorTheme: NotificationColorTheme = NotificationColorTheme.CYAN, isPaused: Boolean = false, isIdle: Boolean = false ): Icon</ID>
+    <ID>CyclomaticComplexMethod:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$fun getSpeedComponents(bytesPerSec: Long, unit: SpeedUnit): Pair&lt;String, String&gt;</ID>
+    <ID>CyclomaticComplexMethod:MainScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun MainScreen( viewModel: MainViewModel, modifier: Modifier = Modifier )</ID>
+    <ID>CyclomaticComplexMethod:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$private fun safeGetDiagnostics(context: Context): DetailedNetworkDiagnostics</ID>
+    <ID>CyclomaticComplexMethod:NetworkInfoCard.kt$@Composable fun NetworkInfoCard( snapshot: SpeedSnapshot, diagnostics: DetailedNetworkDiagnostics, pingState: PingDiagnosticState = PingDiagnosticState(), onRunPingDiagnostic: () -&gt; Unit = {}, onCancelPingDiagnostic: () -&gt; Unit = {}, modifier: Modifier = Modifier )</ID>
+    <ID>CyclomaticComplexMethod:NetworkModels.kt$SpeedFormatter$fun formatCompactSpeed(bytesPerSec: Long, unit: SpeedUnit): String</ID>
+    <ID>CyclomaticComplexMethod:NotificationHelper.kt$NotificationHelper$fun buildSpeedNotification( context: Context, snapshot: SpeedSnapshot, settings: SpeedSettings, isPaused: Boolean = false ): Notification</ID>
+    <ID>CyclomaticComplexMethod:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$private fun synthesizeReport( networkType: NetworkType, networkName: String, ipAddress: String, gatewayIp: String?, pingResult: PingDiagnosticResult, downloadSpeedBps: Long, peakDownloadBps: Long, downloadBytes: Long, downloadDurationMs: Long, uploadSpeedBps: Long, peakUploadBps: Long, uploadBytes: Long, uploadDurationMs: Long ): OneTimeDiagnosticResult</ID>
+    <ID>CyclomaticComplexMethod:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$private suspend fun performDownloadBenchmark( onProgress: (fraction: Float, currentSpeedBps: Long, bytesRead: Long, totalBytes: Long) -&gt; Unit ): ThroughputStats</ID>
+    <ID>CyclomaticComplexMethod:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$private suspend fun performUploadBenchmark( onProgress: (fraction: Float, currentSpeedBps: Long, bytesSent: Long, totalBytes: Long) -&gt; Unit ): ThroughputStats</ID>
+    <ID>CyclomaticComplexMethod:PingDiagnosticRunner.kt$PingDiagnosticRunner$suspend fun runDiagnostic( context: Context, gatewayIp: String?, onProgress: (progress: Float, step: String) -&gt; Unit ): PingDiagnosticResult</ID>
+    <ID>CyclomaticComplexMethod:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$fun sampleProcessUsage(context: Context, isServiceActive: Boolean): ProcessResourceUsage</ID>
+    <ID>CyclomaticComplexMethod:QuickSettingsTileCard.kt$@Composable fun QuickSettingsTileCard( snapshot: SpeedSnapshot, settings: SpeedSettings, isServiceRunning: Boolean, isPaused: Boolean, modifier: Modifier = Modifier )</ID>
+    <ID>CyclomaticComplexMethod:SettingsBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun SettingsBottomSheet( settings: SpeedSettings, onUpdateSettings: ((SpeedSettings) -&gt; SpeedSettings) -&gt; Unit, onResetTodayUsage: () -&gt; Unit, onDismiss: () -&gt; Unit )</ID>
+    <ID>CyclomaticComplexMethod:SettingsScreen.kt$@Composable fun SettingsScreen( settings: SpeedSettings, onUpdateSettings: ((SpeedSettings) -&gt; SpeedSettings) -&gt; Unit, onResetTodayUsage: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>CyclomaticComplexMethod:SpeedSettingsRepository.kt$SpeedSettingsRepository$private fun loadSettings(): SpeedSettings</ID>
+    <ID>CyclomaticComplexMethod:SpeedTileService.kt$SpeedTileService$override fun onStartListening()</ID>
+    <ID>DestructuringDeclarationWithTooManyEntries:SpeedTileService.kt$SpeedTileService$(isRunning, isPaused, snapshot, settings)</ID>
+    <ID>ImplicitDefaultLocale:DataUsageAnalyticsCard.kt$String.format("%.0f%% share", analytics.cellPercentage)</ID>
+    <ID>ImplicitDefaultLocale:DataUsageAnalyticsCard.kt$String.format("%.0f%% share", analytics.wifiPercentage)</ID>
+    <ID>LongMethod:DashboardScreen.kt$@Suppress("LongParameterList") @Composable fun DashboardScreen( snapshot: SpeedSnapshot, history: List&lt;SpeedPoint&gt;, settings: SpeedSettings, isRunning: Boolean, isPaused: Boolean, isTestingSpeed: Boolean, isBubbleActive: Boolean, hasNotificationPermission: Boolean, onRequestNotificationPermission: () -&gt; Unit, onToggleService: () -&gt; Unit, onTogglePause: () -&gt; Unit, onRunSpeedTest: () -&gt; Unit, onToggleBubble: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:DataUsageAnalyticsCard.kt$@Composable fun DataUsageAnalyticsCard( modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:DataUsageScreen.kt$@Composable fun DataUsageScreen( snapshot: SpeedSnapshot, speedUnit: SpeedUnit, onResetTodayUsage: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:DataUsageScreen.kt$@Composable private fun ActiveSessionCard( snapshot: SpeedSnapshot, speedUnit: SpeedUnit )</ID>
+    <ID>LongMethod:DataUsageScreen.kt$@Composable private fun DataSummaryCardsRow(snapshot: SpeedSnapshot)</ID>
+    <ID>LongMethod:DataUsageScreen.kt$@Composable private fun WifiVsCellularCard( totalBytes: Long, wifiBytes: Long, cellBytes: Long )</ID>
+    <ID>LongMethod:FloatingBubbleCard.kt$@Composable fun FloatingBubbleCard( snapshot: SpeedSnapshot, unit: SpeedUnit, isBubbleActive: Boolean, onToggleBubble: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:FloatingBubbleService.kt$@Composable private fun FloatingBubbleUi( snapshot: SpeedSnapshot, settings: SpeedSettings, onDragDelta: (Float, Float) -&gt; Unit, onOpenApp: () -&gt; Unit, onClose: () -&gt; Unit )</ID>
+    <ID>LongMethod:FloatingBubbleService.kt$FloatingBubbleService$private fun setupFloatingWindow()</ID>
+    <ID>LongMethod:HomeScreenWidgetCard.kt$@Composable fun HomeScreenWidgetCard( snapshot: SpeedSnapshot, settings: SpeedSettings, isServiceRunning: Boolean, isPaused: Boolean, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:LiveSpeedGraph.kt$@Composable fun LiveSpeedGraph( history: List&lt;SpeedPoint&gt;, unit: SpeedUnit, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:MainScreen.kt$@Composable private fun FloatingPillNavigationBar( currentRoute: String, onNavigate: (Screen) -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:MainScreen.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun MainScreen( viewModel: MainViewModel, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider.Companion$fun buildRemoteViews( context: Context, snapshot: SpeedSnapshot, settings: SpeedSettings, isServiceRunning: Boolean, isPaused: Boolean ): RemoteViews</ID>
+    <ID>LongMethod:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$private fun safeGetDiagnostics(context: Context): DetailedNetworkDiagnostics</ID>
+    <ID>LongMethod:NetworkInfoCard.kt$@Composable fun NetworkInfoCard( snapshot: SpeedSnapshot, diagnostics: DetailedNetworkDiagnostics, pingState: PingDiagnosticState = PingDiagnosticState(), onRunPingDiagnostic: () -&gt; Unit = {}, onCancelPingDiagnostic: () -&gt; Unit = {}, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:NetworkInfoCard.kt$@Composable private fun InterfaceRowItem(iface: NetworkInterfaceItem)</ID>
+    <ID>LongMethod:NotificationHelper.kt$NotificationHelper$fun buildSpeedNotification( context: Context, snapshot: SpeedSnapshot, settings: SpeedSettings, isPaused: Boolean = false ): Notification</ID>
+    <ID>LongMethod:OneTimeDiagnosticCard.kt$@Composable private fun IdleDiagnosticView( onStart: () -&gt; Unit )</ID>
+    <ID>LongMethod:OneTimeDiagnosticCard.kt$@Composable private fun RunningDiagnosticView( state: OneTimeDiagnosticState, speedUnit: SpeedUnit, onCancel: () -&gt; Unit )</ID>
+    <ID>LongMethod:OneTimeDiagnosticCard.kt$@Composable private fun ServiceSuitabilityRow(item: ServiceSuitability)</ID>
+    <ID>LongMethod:OneTimeDiagnosticCard.kt$@OptIn(ExperimentalLayoutApi::class) @Composable fun OneTimeDiagnosticCard( diagnosticState: OneTimeDiagnosticState, speedUnit: SpeedUnit, onStartDiagnostic: () -&gt; Unit, onCancelDiagnostic: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:OneTimeDiagnosticCard.kt$@OptIn(ExperimentalLayoutApi::class) @Composable private fun CompletedDiagnosticSummaryView( result: OneTimeDiagnosticResult, speedUnit: SpeedUnit, showPingDetails: Boolean, onTogglePingDetails: () -&gt; Unit, onRetest: () -&gt; Unit, onCopyReport: () -&gt; Unit, onShareReport: () -&gt; Unit )</ID>
+    <ID>LongMethod:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$private fun synthesizeReport( networkType: NetworkType, networkName: String, ipAddress: String, gatewayIp: String?, pingResult: PingDiagnosticResult, downloadSpeedBps: Long, peakDownloadBps: Long, downloadBytes: Long, downloadDurationMs: Long, uploadSpeedBps: Long, peakUploadBps: Long, uploadBytes: Long, uploadDurationMs: Long ): OneTimeDiagnosticResult</ID>
+    <ID>LongMethod:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$private suspend fun performDownloadBenchmark( onProgress: (fraction: Float, currentSpeedBps: Long, bytesRead: Long, totalBytes: Long) -&gt; Unit ): ThroughputStats</ID>
+    <ID>LongMethod:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$private suspend fun performUploadBenchmark( onProgress: (fraction: Float, currentSpeedBps: Long, bytesSent: Long, totalBytes: Long) -&gt; Unit ): ThroughputStats</ID>
+    <ID>LongMethod:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$suspend fun runFullDiagnostic( context: Context, gatewayIp: String?, networkType: NetworkType, networkName: String, ipAddress: String, onUpdate: (OneTimeDiagnosticState) -&gt; Unit ): OneTimeDiagnosticResult</ID>
+    <ID>LongMethod:PingDiagnosticRunner.kt$PingDiagnosticRunner$suspend fun runDiagnostic( context: Context, gatewayIp: String?, onProgress: (progress: Float, step: String) -&gt; Unit ): PingDiagnosticResult</ID>
+    <ID>LongMethod:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$fun sampleProcessUsage(context: Context, isServiceActive: Boolean): ProcessResourceUsage</ID>
+    <ID>LongMethod:ProcessResourceDiagnosticsCard.kt$@Composable fun ProcessResourceDiagnosticsCard( usage: ProcessResourceUsage, isServiceRunning: Boolean, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:QuickSettingsTileCard.kt$@Composable fun QuickSettingsTileCard( snapshot: SpeedSnapshot, settings: SpeedSettings, isServiceRunning: Boolean, isPaused: Boolean, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:SettingsBottomSheet.kt$@Composable private fun CustomInputDialog( title: String, description: String, initialValue: String, unitSuffix: String, minValue: Long, maxValue: Long, onConfirm: (Long) -&gt; Unit, onDismiss: () -&gt; Unit )</ID>
+    <ID>LongMethod:SettingsBottomSheet.kt$@OptIn(ExperimentalMaterial3Api::class) @Composable fun SettingsBottomSheet( settings: SpeedSettings, onUpdateSettings: ((SpeedSettings) -&gt; SpeedSettings) -&gt; Unit, onResetTodayUsage: () -&gt; Unit, onDismiss: () -&gt; Unit )</ID>
+    <ID>LongMethod:SettingsScreen.kt$@Composable fun SettingsScreen( settings: SpeedSettings, onUpdateSettings: ((SpeedSettings) -&gt; SpeedSettings) -&gt; Unit, onResetTodayUsage: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:SpeedMetricCards.kt$@Composable private fun MetricCard( title: String, speedBytes: Long, peakBytes: Long, sessionBytes: Long, unit: SpeedUnit, accentColor: Color, glowColor: Color, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier )</ID>
+    <ID>LongMethod:SpeedMonitorScreen.kt$@Composable private fun ActiveNetworkStatusBanner( snapshot: SpeedSnapshot, isRunning: Boolean )</ID>
+    <ID>LongMethod:SpeedMonitorScreen.kt$@Composable private fun PromotedNotificationBadgeCard( hasPermission: Boolean, onRequestPermission: () -&gt; Unit, isServiceRunning: Boolean, isPaused: Boolean )</ID>
+    <ID>LongMethod:SpeedMonitorScreen.kt$@Composable private fun ServiceControlsBar( isRunning: Boolean, isPaused: Boolean, isTestingSpeed: Boolean, onToggleService: () -&gt; Unit, onTogglePause: () -&gt; Unit, onRunSpeedTest: () -&gt; Unit )</ID>
+    <ID>LongMethod:SpeedSettingsRepository.kt$SpeedSettingsRepository$fun getHistoricalUsage(daysCount: Int): UsageAnalyticsSummary</ID>
+    <ID>LongMethod:Theme.kt$@Composable fun NetSpeedTheme( themeMode: AppThemeMode = AppThemeMode.SYSTEM, isOled: Boolean = false, content: @Composable () -&gt; Unit )</ID>
+    <ID>LongParameterList:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$( snapshot: SpeedSnapshot, displayMode: DisplayMode, speedUnit: SpeedUnit, colorTheme: NotificationColorTheme = NotificationColorTheme.CYAN, isPaused: Boolean = false, isIdle: Boolean = false )</ID>
+    <ID>LongParameterList:NetworkDiagnosticsScreen.kt$( snapshot: SpeedSnapshot, diagnostics: DetailedNetworkDiagnostics, pingState: PingDiagnosticState, oneTimeDiagnosticState: OneTimeDiagnosticState, speedUnit: SpeedUnit, resourceUsage: ProcessResourceUsage, isServiceRunning: Boolean, onRunPingDiagnostic: () -&gt; Unit, onCancelPingDiagnostic: () -&gt; Unit, onRunOneTimeDiagnostic: () -&gt; Unit, onCancelOneTimeDiagnostic: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LongParameterList:NetworkInfoCard.kt$( snapshot: SpeedSnapshot, diagnostics: DetailedNetworkDiagnostics, pingState: PingDiagnosticState = PingDiagnosticState(), onRunPingDiagnostic: () -&gt; Unit = {}, onCancelPingDiagnostic: () -&gt; Unit = {}, modifier: Modifier = Modifier )</ID>
+    <ID>LongParameterList:OneTimeDiagnosticCard.kt$( result: OneTimeDiagnosticResult, speedUnit: SpeedUnit, showPingDetails: Boolean, onTogglePingDetails: () -&gt; Unit, onRetest: () -&gt; Unit, onCopyReport: () -&gt; Unit, onShareReport: () -&gt; Unit )</ID>
+    <ID>LongParameterList:OneTimeDiagnosticCard.kt$( title: String, icon: ImageVector, iconTint: Color, primaryValue: String, secondaryValue: String, accentColor: Color, modifier: Modifier = Modifier )</ID>
+    <ID>LongParameterList:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$( context: Context, gatewayIp: String?, networkType: NetworkType, networkName: String, ipAddress: String, onUpdate: (OneTimeDiagnosticState) -&gt; Unit )</ID>
+    <ID>LongParameterList:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$( networkType: NetworkType, networkName: String, ipAddress: String, gatewayIp: String?, pingResult: PingDiagnosticResult, downloadSpeedBps: Long, peakDownloadBps: Long, downloadBytes: Long, downloadDurationMs: Long, uploadSpeedBps: Long, peakUploadBps: Long, uploadBytes: Long, uploadDurationMs: Long )</ID>
+    <ID>LongParameterList:PingDiagnosticRunner.kt$PingDiagnosticRunner$( quality: ConnectionQualityRating, avgLatency: Long, jitterMs: Long, packetLoss: Int, gatewayReachable: Boolean, dnsHealthy: Boolean, httpReachable: Boolean )</ID>
+    <ID>LongParameterList:SettingsBottomSheet.kt$( title: String, description: String, initialValue: String, unitSuffix: String, minValue: Long, maxValue: Long, onConfirm: (Long) -&gt; Unit, onDismiss: () -&gt; Unit )</ID>
+    <ID>LongParameterList:SettingsBottomSheet.kt$( title: String, subtitle: String, checked: Boolean, badge: String? = null, testTag: String = "", onCheckedChange: (Boolean) -&gt; Unit )</ID>
+    <ID>LongParameterList:SpeedMetricCards.kt$( title: String, speedBytes: Long, peakBytes: Long, sessionBytes: Long, unit: SpeedUnit, accentColor: Color, glowColor: Color, icon: androidx.compose.ui.graphics.vector.ImageVector, modifier: Modifier = Modifier )</ID>
+    <ID>LongParameterList:SpeedMonitorScreen.kt$( isRunning: Boolean, isPaused: Boolean, isTestingSpeed: Boolean, onToggleService: () -&gt; Unit, onTogglePause: () -&gt; Unit, onRunSpeedTest: () -&gt; Unit )</ID>
+    <ID>LongParameterList:SpeedMonitorScreen.kt$( snapshot: SpeedSnapshot, history: List&lt;SpeedPoint&gt;, settings: SpeedSettings, isRunning: Boolean, isPaused: Boolean, isTestingSpeed: Boolean, hasNotificationPermission: Boolean, onRequestNotificationPermission: () -&gt; Unit, onToggleService: () -&gt; Unit, onTogglePause: () -&gt; Unit, onRunSpeedTest: () -&gt; Unit, modifier: Modifier = Modifier )</ID>
+    <ID>LoopWithTooManyJumpStatements:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$for</ID>
+    <ID>LoopWithTooManyJumpStatements:TrafficMonitor.kt$TrafficMonitor$while</ID>
+    <ID>MagicNumber:AnimationUtils.kt$0.96f</ID>
+    <ID>MagicNumber:AnimationUtils.kt$32f</ID>
+    <ID>MagicNumber:Color.kt$0x33EF9DFA</ID>
+    <ID>MagicNumber:Color.kt$0xFF000000</ID>
+    <ID>MagicNumber:Color.kt$0xFF00E5FF</ID>
+    <ID>MagicNumber:Color.kt$0xFF0284C7</ID>
+    <ID>MagicNumber:Color.kt$0xFF0369A1</ID>
+    <ID>MagicNumber:Color.kt$0xFF047857</ID>
+    <ID>MagicNumber:Color.kt$0xFF059669</ID>
+    <ID>MagicNumber:Color.kt$0xFF070707</ID>
+    <ID>MagicNumber:Color.kt$0xFF090D16</ID>
+    <ID>MagicNumber:Color.kt$0xFF0F172A</ID>
+    <ID>MagicNumber:Color.kt$0xFF101010</ID>
+    <ID>MagicNumber:Color.kt$0xFF10B981</ID>
+    <ID>MagicNumber:Color.kt$0xFF111726</ID>
+    <ID>MagicNumber:Color.kt$0xFF120E18</ID>
+    <ID>MagicNumber:Color.kt$0xFF150F1E</ID>
+    <ID>MagicNumber:Color.kt$0xFF192238</ID>
+    <ID>MagicNumber:Color.kt$0xFF1A1A1C</ID>
+    <ID>MagicNumber:Color.kt$0xFF1B1424</ID>
+    <ID>MagicNumber:Color.kt$0xFF1D1427</ID>
+    <ID>MagicNumber:Color.kt$0xFF22304C</ID>
+    <ID>MagicNumber:Color.kt$0xFF232F4C</ID>
+    <ID>MagicNumber:Color.kt$0xFF251B32</ID>
+    <ID>MagicNumber:Color.kt$0xFF262628</ID>
+    <ID>MagicNumber:Color.kt$0xFF281C35</ID>
+    <ID>MagicNumber:Color.kt$0xFF322442</ID>
+    <ID>MagicNumber:Color.kt$0xFF34D399</ID>
+    <ID>MagicNumber:Color.kt$0xFF38BDF8</ID>
+    <ID>MagicNumber:Color.kt$0xFF475569</ID>
+    <ID>MagicNumber:Color.kt$0xFF4C3362</ID>
+    <ID>MagicNumber:Color.kt$0xFF64748B</ID>
+    <ID>MagicNumber:Color.kt$0xFF6D28D9</ID>
+    <ID>MagicNumber:Color.kt$0xFF6EE7B7</ID>
+    <ID>MagicNumber:Color.kt$0xFF7C3AED</ID>
+    <ID>MagicNumber:Color.kt$0xFF94A3B8</ID>
+    <ID>MagicNumber:Color.kt$0xFF9DD4FA</ID>
+    <ID>MagicNumber:Color.kt$0xFFA7F3D0</ID>
+    <ID>MagicNumber:Color.kt$0xFFA855F7</ID>
+    <ID>MagicNumber:Color.kt$0xFFC084FC</ID>
+    <ID>MagicNumber:Color.kt$0xFFC7E8FD</ID>
+    <ID>MagicNumber:Color.kt$0xFFE2E8F0</ID>
+    <ID>MagicNumber:Color.kt$0xFFEF9DFA</ID>
+    <ID>MagicNumber:Color.kt$0xFFF1F5F9</ID>
+    <ID>MagicNumber:Color.kt$0xFFF43F5E</ID>
+    <ID>MagicNumber:Color.kt$0xFFF59E0B</ID>
+    <ID>MagicNumber:Color.kt$0xFFF7C4FD</ID>
+    <ID>MagicNumber:Color.kt$0xFFF8FAFC</ID>
+    <ID>MagicNumber:Color.kt$0xFFFFFFFF</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$0.01f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$0.55f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$0.7f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$0.85f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$0x15FFFFFF</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$0x6694A3B8</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$0xFF64748B</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$1.2f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$1.5f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$100f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$1024L</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$14f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$30</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$3f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$4f</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$7</ID>
+    <ID>MagicNumber:DataUsageAnalyticsCard.kt$8f</ID>
+    <ID>MagicNumber:DataUsageScreen.kt$0.01f</ID>
+    <ID>MagicNumber:DataUsageScreen.kt$100</ID>
+    <ID>MagicNumber:DataUsageScreen.kt$25</ID>
+    <ID>MagicNumber:DataUsageScreen.kt$75</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$10.0</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$100.0</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$1000.0</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$1024.0</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$220</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$22f</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$26f</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$3</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$4</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$4.5f</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$42f</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$44f</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$46f</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$48f</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$54f</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$8</ID>
+    <ID>MagicNumber:DynamicSpeedIconRenderer.kt$DynamicSpeedIconRenderer$82f</ID>
+    <ID>MagicNumber:FloatingBubbleCard.kt$0xE60D1527</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$0xE6080D1A</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$0xFF94A3B8</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$0xFFCBD5E1</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$0xFFF59E0B</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$12</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$130</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$60</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$61</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$FloatingBubbleService$100</ID>
+    <ID>MagicNumber:FloatingBubbleService.kt$FloatingBubbleService$250</ID>
+    <ID>MagicNumber:HomeScreenWidgetCard.kt$0xFF10B981</ID>
+    <ID>MagicNumber:HomeScreenWidgetCard.kt$0xFF94A3B8</ID>
+    <ID>MagicNumber:HomeScreenWidgetCard.kt$0xFFF59E0B</ID>
+    <ID>MagicNumber:HomeScreenWidgetCard.kt$1.4f</ID>
+    <ID>MagicNumber:LiveSpeedGraph.kt$100</ID>
+    <ID>MagicNumber:LiveSpeedGraph.kt$1024L</ID>
+    <ID>MagicNumber:LiveSpeedGraph.kt$3</ID>
+    <ID>MagicNumber:LiveSpeedGraph.kt$59f</ID>
+    <ID>MagicNumber:LiveSpeedGraph.kt$60</ID>
+    <ID>MagicNumber:LiveSpeedGraph.kt$8f</ID>
+    <ID>MagicNumber:MainScreen.kt$150</ID>
+    <ID>MagicNumber:MainScreen.kt$200</ID>
+    <ID>MagicNumber:MainScreen.kt$220</ID>
+    <ID>MagicNumber:MainScreen.kt$250</ID>
+    <ID>MagicNumber:MainScreen.kt$280</ID>
+    <ID>MagicNumber:MainViewModel.kt$MainViewModel$16384</ID>
+    <ID>MagicNumber:MainViewModel.kt$MainViewModel$2000L</ID>
+    <ID>MagicNumber:MainViewModel.kt$MainViewModel$4000</ID>
+    <ID>MagicNumber:MainViewModel.kt$MainViewModel$6000</ID>
+    <ID>MagicNumber:NetSpeedForegroundService.kt$NetSpeedForegroundService$10</ID>
+    <ID>MagicNumber:NetSpeedForegroundService.kt$NetSpeedForegroundService$34</ID>
+    <ID>MagicNumber:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider.Companion$1001</ID>
+    <ID>MagicNumber:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider.Companion$1002</ID>
+    <ID>MagicNumber:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider.Companion$1003</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$100</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$1000</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$120</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$2400</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$25</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$2500</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$3</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$4</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$4900</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$5</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$50f</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$5900</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$5925</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$6</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$60</ID>
+    <ID>MagicNumber:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$8</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$0xFF0A0E18</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$0xFF3B82F6</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$0xFF60A5FA</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$0xFFA855F7</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$10</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$130</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$15</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$35</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$60</ID>
+    <ID>MagicNumber:NetworkInfoCard.kt$61</ID>
+    <ID>MagicNumber:NetworkModels.kt$NotificationColorTheme.AMBER$0xFFF59E0B</ID>
+    <ID>MagicNumber:NetworkModels.kt$NotificationColorTheme.CYAN$0xFF06B6D4</ID>
+    <ID>MagicNumber:NetworkModels.kt$NotificationColorTheme.EMERALD$0xFF10B981</ID>
+    <ID>MagicNumber:NetworkModels.kt$NotificationColorTheme.MONOCHROME$0xFFF8FAFC</ID>
+    <ID>MagicNumber:NetworkModels.kt$NotificationColorTheme.PINK$0xFFEF9DFA</ID>
+    <ID>MagicNumber:NetworkModels.kt$NotificationColorTheme.PURPLE$0xFFA855F7</ID>
+    <ID>MagicNumber:NetworkModels.kt$NotificationColorTheme.ROSE$0xFFF43F5E</ID>
+    <ID>MagicNumber:NetworkModels.kt$NotificationColorTheme.SYSTEM$0xFF0284C7</ID>
+    <ID>MagicNumber:NetworkModels.kt$SpeedFormatter$10.0</ID>
+    <ID>MagicNumber:NetworkModels.kt$SpeedFormatter$1000.0</ID>
+    <ID>MagicNumber:NetworkModels.kt$SpeedFormatter$1024.0</ID>
+    <ID>MagicNumber:NetworkModels.kt$SpeedFormatter$8</ID>
+    <ID>MagicNumber:NotificationHelper.kt$NotificationHelper$1024L</ID>
+    <ID>MagicNumber:NotificationHelper.kt$NotificationHelper$36</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$0.5</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$1.5</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$10</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$10.0</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$1000L</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$100L</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$110</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$12</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$120</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$130</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$140</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$15_000_000L</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$1_000_000.0</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$20</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$20.0</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$200</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$25.0</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$299</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$3</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$3.0</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$30</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$32768</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$35</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$350L</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$4</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$4.0</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$5</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$5.0</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$55</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$60</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$60.0</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$6000</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$65536</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$7000L</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$8</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$8.0</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$80</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$8000</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$8000L</ID>
+    <ID>MagicNumber:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$90</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$0.95f</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$100</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$12</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$120L</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$15</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$160</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$200</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$25</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$3</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$35</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$399</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$40</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$5</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$80</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$80L</ID>
+    <ID>MagicNumber:PingDiagnosticRunner.kt$PingDiagnosticRunner$85</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$0.005f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$0.01f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$0.02f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$0.03f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$0.05f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$0.1f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$1.8f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$100</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$1000L</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$100f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$1024f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$16f</ID>
+    <ID>MagicNumber:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$4.5f</ID>
+    <ID>MagicNumber:ProcessResourceDiagnosticsCard.kt$0xFFA855F7</ID>
+    <ID>MagicNumber:ProcessResourceDiagnosticsCard.kt$60</ID>
+    <ID>MagicNumber:QuickSettingsTileCard.kt$0xFF0F172A</ID>
+    <ID>MagicNumber:QuickSettingsTileCard.kt$0xFF1E293B</ID>
+    <ID>MagicNumber:QuickSettingsTileCard.kt$0xFF334155</ID>
+    <ID>MagicNumber:QuickSettingsTileCard.kt$0xFF94A3B8</ID>
+    <ID>MagicNumber:QuickSettingsTileCard.kt$0xFFE2E8F0</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$0xFF0F172A</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$0xFF94A3B8</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$1.1f</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$1000L</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$1000f</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$100L</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$10L</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$2000L</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$200L</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$200f</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$250f</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$5000L</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$5000f</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$500L</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$500f</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$50L</ID>
+    <ID>MagicNumber:SettingsBottomSheet.kt$5f</ID>
+    <ID>MagicNumber:SettingsScreen.kt$1.1f</ID>
+    <ID>MagicNumber:SettingsScreen.kt$1000L</ID>
+    <ID>MagicNumber:SettingsScreen.kt$1000f</ID>
+    <ID>MagicNumber:SettingsScreen.kt$100L</ID>
+    <ID>MagicNumber:SettingsScreen.kt$10L</ID>
+    <ID>MagicNumber:SettingsScreen.kt$2000L</ID>
+    <ID>MagicNumber:SettingsScreen.kt$200L</ID>
+    <ID>MagicNumber:SettingsScreen.kt$200f</ID>
+    <ID>MagicNumber:SettingsScreen.kt$250f</ID>
+    <ID>MagicNumber:SettingsScreen.kt$5000L</ID>
+    <ID>MagicNumber:SettingsScreen.kt$5000f</ID>
+    <ID>MagicNumber:SettingsScreen.kt$500L</ID>
+    <ID>MagicNumber:SettingsScreen.kt$500f</ID>
+    <ID>MagicNumber:SettingsScreen.kt$50L</ID>
+    <ID>MagicNumber:SettingsScreen.kt$5f</ID>
+    <ID>MagicNumber:SpeedMonitorScreen.kt$1.2f</ID>
+    <ID>MagicNumber:SpeedMonitorScreen.kt$1200</ID>
+    <ID>MagicNumber:SpeedMonitorScreen.kt$80</ID>
+    <ID>MagicNumber:SpeedSettingsRepository.kt$SpeedSettingsRepository$0.75</ID>
+    <ID>MagicNumber:SpeedSettingsRepository.kt$SpeedSettingsRepository$1000L</ID>
+    <ID>MagicNumber:SpeedSettingsRepository.kt$SpeedSettingsRepository$100f</ID>
+    <ID>MagicNumber:SpeedSettingsRepository.kt$SpeedSettingsRepository$15_000L</ID>
+    <ID>MagicNumber:Theme.kt$0x6622304A</ID>
+    <ID>MagicNumber:Theme.kt$0xFF000000</ID>
+    <ID>MagicNumber:Theme.kt$0xFF0C0C0E</ID>
+    <ID>MagicNumber:Theme.kt$0xFF0C101A</ID>
+    <ID>MagicNumber:Theme.kt$0xFF141416</ID>
+    <ID>MagicNumber:Theme.kt$0xFF161F30</ID>
+    <ID>MagicNumber:Theme.kt$0xFF1E293B</ID>
+    <ID>MagicNumber:Theme.kt$0xFF262628</ID>
+    <ID>MagicNumber:Theme.kt$0xFF71717A</ID>
+    <ID>MagicNumber:Theme.kt$0xFFA1A1AA</ID>
+    <ID>MagicNumber:Theme.kt$0xFFA28EA9</ID>
+    <ID>MagicNumber:Theme.kt$0xFFE5D2ED</ID>
+    <ID>MagicNumber:Theme.kt$0xFFFFF2FD</ID>
+    <ID>MagicNumber:Theme.kt$0xFFFFFFFF</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$0.1</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$1000</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$1000.0</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$10000L</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$1000L</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$1200</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$3000L</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$5000L</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$53</ID>
+    <ID>MagicNumber:TrafficMonitor.kt$TrafficMonitor$60</ID>
+    <ID>MaxLineLength:DataUsageAnalyticsCard.kt$val avgY = chartHeight - (analytics.dailyAverageBytes.toFloat() / maxDayBytes) * (chartHeight * 0.85f)</ID>
+    <ID>MaxLineLength:DataUsageAnalyticsCard.kt$val barWidth = if (count &lt;= 7) (slotWidth * 0.55f).coerceAtLeast(14f) else (slotWidth * 0.7f).coerceAtLeast(4f)</ID>
+    <ID>MaxLineLength:DataUsageAnalyticsCard.kt$val cellHeight = (cellRatio * (chartHeight * 0.85f)).coerceAtLeast(if (record.cellBytes &gt; 0) 4f else 0f)</ID>
+    <ID>MaxLineLength:DataUsageAnalyticsCard.kt$val wifiHeight = (wifiRatio * (chartHeight * 0.85f)).coerceAtLeast(if (record.wifiBytes &gt; 0) 4f else 0f)</ID>
+    <ID>MaxLineLength:DataUsageScreen.kt$text = "This will zero out today's tracked Wi-Fi and Cellular counters for the current day. Historical logs from previous days will be preserved."</ID>
+    <ID>MaxLineLength:FloatingBubbleCard.kt$.</ID>
+    <ID>MaxLineLength:FloatingBubbleService.kt$.</ID>
+    <ID>MaxLineLength:FloatingBubbleService.kt$imageVector = if (snapshot.networkType == NetworkType.WIFI) Icons.Default.Wifi else Icons.Default.CellTower</ID>
+    <ID>MaxLineLength:HomeScreenWidgetCard.kt$color = if (isPaused) Color(0xFFF59E0B) else if (!isServiceRunning) Color(0xFF94A3B8) else Color(0xFF10B981)</ID>
+    <ID>MaxLineLength:HomeScreenWidgetCard.kt$text = "Peak: " + SpeedFormatter.formatSpeed(snapshot.peakDownloadBytesPerSec, settings.speedUnit)</ID>
+    <ID>MaxLineLength:HomeScreenWidgetCard.kt$text = "Peak: " + SpeedFormatter.formatSpeed(snapshot.peakUploadBytesPerSec, settings.speedUnit)</ID>
+    <ID>MaxLineLength:HomeScreenWidgetCard.kt$text = if (isPaused) "PAUSED" else if (!isServiceRunning) "STANDBY" else if (snapshot.pingMs &gt;= 0) "${snapshot.pingMs} ms" else "LIVE"</ID>
+    <ID>MaxLineLength:HomeScreenWidgetCard.kt$text = if (snapshot.networkName.isNotEmpty() &amp;&amp; snapshot.networkName != "Unknown") snapshot.networkName else snapshot.networkType.title</ID>
+    <ID>MaxLineLength:LiveSpeedGraph.kt$val lastDlY = h - ((lastPoint.downloadBytesPerSec.toFloat() / maxSpeed).coerceIn(0f, 1f) * (h - 10.dp.toPx()))</ID>
+    <ID>MaxLineLength:MainScreen.kt$ContextCompat.checkSelfPermission(context, Manifest.permission.POST_NOTIFICATIONS) == PackageManager.PERMISSION_GRANTED</ID>
+    <ID>MaxLineLength:MainScreen.kt$val statusText = if (!isRunning) "Service Stopped" else if (isPaused) "Service Paused" else "Promoted Active"</ID>
+    <ID>MaxLineLength:MainViewModel.kt$MainViewModel$// Download a small chunk of test file (5MB or 10MB test data) from Cloudflare CDN to verify traffic meter</ID>
+    <ID>MaxLineLength:MainViewModel.kt$MainViewModel$val oneTimeDiagnosticState: StateFlow&lt;com.onlasdan.netnet.model.OneTimeDiagnosticState&gt; = _oneTimeDiagnosticState.asStateFlow()</ID>
+    <ID>MaxLineLength:MainViewModel.kt$MainViewModel$val pingDiagnosticState: StateFlow&lt;com.onlasdan.netnet.model.PingDiagnosticState&gt; = _pingDiagnosticState.asStateFlow()</ID>
+    <ID>MaxLineLength:NetSpeedForegroundService.kt$NetSpeedForegroundService$// Immediately promote to foreground in onCreate to strictly satisfy Android foreground service lifecycle contracts</ID>
+    <ID>MaxLineLength:NetSpeedForegroundService.kt$NetSpeedForegroundService$// Throttle redundant zero-speed notifications to once every 10 seconds unless signature changed</ID>
+    <ID>MaxLineLength:NetSpeedForegroundService.kt$NetSpeedForegroundService$val signature = "${snapshot.downloadBytesPerSec}_${snapshot.uploadBytesPerSec}_${snapshot.networkName}_${settings.displayMode}_${settings.speedUnit}_${settings.notificationIconStyle}_${settings.notificationColorTheme}"</ID>
+    <ID>MaxLineLength:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$name.startsWith("rmnet") || name.startsWith("ccmni") || name.startsWith("pdp") || name.startsWith("wwan") -&gt; NetworkType.CELLULAR</ID>
+    <ID>MaxLineLength:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$name.startsWith("tun") || name.startsWith("tap") || name.startsWith("ipsec") || name.startsWith("ppp") -&gt; NetworkType.VPN</ID>
+    <ID>MaxLineLength:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$networkName = if (rawSsid.isNotEmpty() &amp;&amp; rawSsid != "&lt;unknown ssid&gt;") rawSsid else "Wi-Fi Network"</ID>
+    <ID>MaxLineLength:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$val wifiManager = context.applicationContext.getSystemService(Context.WIFI_SERVICE) as? WifiManager</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$border = if (pingState.status == PingDiagnosticStatus.COMPLETED) androidx.compose.foundation.BorderStroke(1.dp, CyanGlow.copy(alpha = 0.5f)) else null</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$color = if (target.latencyMs &lt;= 50) EmeraldGlow else if (target.latencyMs &lt;= 100) AmberWarning else RoseError</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$containerColor = if (pingState.status == PingDiagnosticStatus.COMPLETED) colors.surfaceElevated else CyanPrimary</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$contentColor = if (pingState.status == PingDiagnosticStatus.COMPLETED) CyanGlow else colors.background</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 10.dp, vertical = 0.dp)</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$contentPadding = androidx.compose.foundation.layout.PaddingValues(horizontal = 12.dp, vertical = 0.dp)</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$imageVector = if (pingState.status == PingDiagnosticStatus.COMPLETED) Icons.Default.Refresh else Icons.Default.PlayArrow</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$imageVector = if (result.qualityRating == ConnectionQualityRating.EXCELLENT || result.qualityRating == ConnectionQualityRating.GOOD) Icons.Default.CheckCircle else Icons.Default.Warning</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$sub = if (result.avgLatencyMs &lt;= 40) "Ultra Low" else if (result.avgLatencyMs &lt;= 90) "Normal" else "High"</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$sub = if (result.packetLossPercent == 0) "0 Drops (Perfect)" else "${result.packetLossPercent}% Failed"</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$text = if (diagnostics.dnsServers.isNotEmpty()) diagnostics.dnsServers.joinToString(", ") else "System Default"</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$text = if (pingState.status == PingDiagnosticStatus.COMPLETED) "Retest" else "Run Ping Test"</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$text = if (showAllInterfaces) "Hide Network Interfaces List" else "View All Network Interfaces (${diagnostics.interfaceList.size} found)"</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$val jitterColor = if (result.jitterMs &lt;= 15) EmeraldSuccess else if (result.jitterMs &lt;= 35) AmberWarning else RoseError</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$val lossColor = if (result.packetLossPercent == 0) EmeraldSuccess else if (result.packetLossPercent &lt;= 10) AmberWarning else RoseError</ID>
+    <ID>MaxLineLength:NetworkInfoCard.kt$value = if (diagnostics.signalStrengthDbm != null) "${diagnostics.signalStrengthDbm} dBm" else "${diagnostics.signalLevelPercent ?: 85}%"</ID>
+    <ID>MaxLineLength:NetworkModels.kt$ConnectionQualityRating$EXCELLENT : ConnectionQualityRating</ID>
+    <ID>MaxLineLength:NetworkModels.kt$ConnectionQualityRating$FAIR : ConnectionQualityRating</ID>
+    <ID>MaxLineLength:NetworkModels.kt$ConnectionQualityRating$GOOD : ConnectionQualityRating</ID>
+    <ID>MaxLineLength:NetworkModels.kt$ConnectionQualityRating$OFFLINE : ConnectionQualityRating</ID>
+    <ID>MaxLineLength:NetworkModels.kt$ConnectionQualityRating$POOR : ConnectionQualityRating</ID>
+    <ID>MaxLineLength:NetworkModels.kt$ConnectionQualityRating$UNSTABLE : ConnectionQualityRating</ID>
+    <ID>MaxLineLength:NotificationHelper.kt$NotificationHelper$val isBelowThreshold = settings.idleThresholdKbps &gt; 0 &amp;&amp; (snapshot.downloadBytesPerSec + snapshot.uploadBytesPerSec) &lt; thresholdBytes</ID>
+    <ID>MaxLineLength:NotificationHelper.kt$NotificationHelper$val setPromotedMethod = builder.javaClass.getMethod("setRequestPromotedOngoing", Boolean::class.javaPrimitiveType)</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticCard.kt$if</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticCard.kt$putExtra(Intent.EXTRA_SUBJECT, "Network Diagnostic Report - ${diagnosticState.result.networkName}")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticCard.kt$val clip = ClipData.newPlainText("NetSpeed Diagnostic Report", diagnosticState.result.shareableReport)</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$"Mozilla/5.0 (Linux; Android 14; Mobile) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/128.0.0.0 Mobile Safari/537.36"</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$Triple("A", "High Speed Broadband", "Fast and responsive connection. Ideal for high-definition streaming and multi-device use.")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$Triple("A+", "Ultra-Fast &amp; Low Latency", "Exceptional throughput with gaming-grade ping and zero packet dropouts.")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$Triple("B", "Good Reliable Connection", "Stable throughput suitable for 1080p media, web browsing, and remote work.")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$Triple("C", "Moderate / Mobile Speed", "Acceptable for standard browsing and messaging, but high-bandwidth downloads may take longer.")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$Triple("D", "Limited / High Latency", "High latency or constrained bandwidth detected. Video buffering or voice jitter may occur.")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$Triple("F", "Offline or Disrupted", "Unable to complete throughput tests. Check active Wi-Fi or mobile data connectivity.")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$appendLine("• Download: ${SpeedFormatter.formatSpeed(downloadSpeedBps, SpeedUnit.BITS)} [${SpeedFormatter.formatSpeed(downloadSpeedBps, SpeedUnit.BYTES)}]")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$appendLine("• Upload: ${SpeedFormatter.formatSpeed(uploadSpeedBps, SpeedUnit.BITS)} [${SpeedFormatter.formatSpeed(uploadSpeedBps, SpeedUnit.BYTES)}]")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$insights.add("Average Ping: ${avgLatency}ms (Min: ${pingResult.minLatencyMs}ms, Max: ${pingResult.maxLatencyMs}ms)")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$insights.add("Download Throughput: ${SpeedFormatter.formatSpeed(downloadSpeedBps, SpeedUnit.BITS)} (Peak: ${SpeedFormatter.formatSpeed(peakDownloadBps, SpeedUnit.BITS)})")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$insights.add("Upload Throughput: ${SpeedFormatter.formatSpeed(uploadSpeedBps, SpeedUnit.BITS)} (Peak: ${SpeedFormatter.formatSpeed(peakUploadBps, SpeedUnit.BITS)})")</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$statusDescription = if (callGrade == ServiceSuitabilityGrade.EXCELLENT) "Zero Packet Drops" else "Standard Call Quality"</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$statusDescription = if (gamingGrade == ServiceSuitabilityGrade.EXCELLENT) "Competitive Ready" else "Casual Gaming"</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$statusDescription = if (streamingGrade == ServiceSuitabilityGrade.EXCELLENT) "Optimal Bandwidth" else "Standard Playback"</ID>
+    <ID>MaxLineLength:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$statusDescription = if (uploadGrade == ServiceSuitabilityGrade.EXCELLENT) "Instant Uploads" else "Standard Speed"</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"Connection latency is elevated ($avgLatency ms). Check background app updates or router bandwidth utilization."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"DNS is active but Web HTTP probe failed. A captive portal (hotel/cafe login page) or restrictive firewall may be blocking traffic."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"High latency jitter ($jitterMs ms) detected. Network latency is fluctuating, which causes stuttering in real-time gaming or video calls. Switching to 5GHz Wi-Fi is recommended."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"High packet loss ($packetLoss%) detected. Possible Wi-Fi radio interference, distance from AP, or cellular congestion. Move closer to the router or switch frequency bands."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"Local router is reachable, but public Internet is offline. Check WAN fiber/modem cable or ISP status."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"Moderate latency ($avgLatency ms). Normal web browsing and video will work well, but you may notice slight delay in real-time applications."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"Optimal connection health! Ping is extremely low ($avgLatency ms) with zero packet loss. Excellent for gaming, streaming &amp; cloud sync."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"Public DNS resolution response is sluggish or blocked. Consider enabling Private DNS (e.g. 1dot1dot1dot1.cloudflare-dns.com) in Android Settings."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"Stable and responsive connection ($avgLatency ms). High reliability for streaming, browsing, and video conferencing."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$"Unable to communicate with local Wi-Fi router / gateway. Try toggling Airplane Mode or reconnecting to Wi-Fi."</ID>
+    <ID>MaxLineLength:PingDiagnosticRunner.kt$PingDiagnosticRunner$targets.add(TargetConfig(name = "Google HTTP 204", host = "https://www.google.com/generate_204", port = 443, isHttp = true))</ID>
+    <ID>MaxLineLength:PingDiagnosticTest.kt$PingDiagnosticTest$state = state.copy(status = PingDiagnosticStatus.RUNNING, progress = 0.5f, currentStep = "Testing Cloudflare DNS...")</ID>
+    <ID>MaxLineLength:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$isCharging = status == BatteryManager.BATTERY_STATUS_CHARGING || status == BatteryManager.BATTERY_STATUS_FULL</ID>
+    <ID>MaxLineLength:ProcessResourceDiagnosticsCard.kt$imageVector = if (usage.isCharging) Icons.Default.BatteryChargingFull else Icons.Default.BatteryStd</ID>
+    <ID>MaxLineLength:ProcessResourceDiagnosticsCard.kt$text = if (isServiceRunning) "Real-time process telemetry" else "Service paused (Zero overhead)"</ID>
+    <ID>MaxLineLength:PromotedNotificationTest.kt$PromotedNotificationTest$assertEquals("Channel importance should be IMPORTANCE_LOW", NotificationManager.IMPORTANCE_LOW, channel.importance)</ID>
+    <ID>MaxLineLength:QuickSettingsTileCard.kt$.</ID>
+    <ID>MaxLineLength:QuickSettingsTileCard.kt$text = "1. Swipe down twice from the top of your screen to open Quick Settings.\n2. Tap the Edit (Pencil ✏️) icon to customize active tiles.\n3. Scroll down to find 'Net Speed' and drag it to your active tiles."</ID>
+    <ID>MaxLineLength:SettingsBottomSheet.kt$.</ID>
+    <ID>MaxLineLength:SettingsBottomSheet.kt$subtitle = "Reduces network speed polling frequency to 3.0s and pauses socket latency probes to conserve battery"</ID>
+    <ID>MaxLineLength:SettingsBottomSheet.kt$subtitle = "Throttles traffic polling to 10s and suspends notification updates when the screen turns off"</ID>
+    <ID>MaxLineLength:SettingsBottomSheet.kt$text = "${settings.updateIntervalMs} ms (${String.format(java.util.Locale.US, "%.1f", intervalSec)}s)"</ID>
+    <ID>MaxLineLength:SettingsBottomSheet.kt$text = "Live Speed Number draws real-time speed values directly on the status bar icon for non-promoted status bars."</ID>
+    <ID>MaxLineLength:SettingsBottomSheet.kt$text = if (settings.idleThresholdKbps == 0L) "0 KB/s (Always Show)" else "${settings.idleThresholdKbps} KB/s"</ID>
+    <ID>MaxLineLength:SettingsBottomSheet.kt$text = if (settings.notificationDetailedLayout) "Session: 24.5 MB | Today: 1.4 GB • Home_5G" else "NetSpeed Active • Wi-Fi"</ID>
+    <ID>MaxLineLength:SettingsBottomSheet.kt$val standardThresholds = listOf(0L to "Off (0)", 10L to "10 KB/s", 50L to "50 KB/s", 100L to "100 KB/s")</ID>
+    <ID>MaxLineLength:SettingsScreen.kt$.</ID>
+    <ID>MaxLineLength:SettingsScreen.kt$text = "${settings.updateIntervalMs} ms (${String.format(Locale.US, "%.1f", intervalSec)}s)"</ID>
+    <ID>MaxLineLength:SettingsScreen.kt$text = if (settings.idleThresholdKbps == 0L) "0 KB/s (Always Show)" else "${settings.idleThresholdKbps} KB/s"</ID>
+    <ID>MaxLineLength:SettingsScreen.kt$val standardThresholds = listOf(0L to "Off (0)", 10L to "10 KB/s", 50L to "50 KB/s", 100L to "100 KB/s")</ID>
+    <ID>MaxLineLength:SpeedFormatterTest.kt$SpeedFormatterTest$val (kbVal, kbUnit) = com.onlasdan.netnet.notification.DynamicSpeedIconRenderer.getSpeedComponents(450_000L, SpeedUnit.BYTES)</ID>
+    <ID>MaxLineLength:SpeedFormatterTest.kt$SpeedFormatterTest$val (mbVal, mbUnit) = com.onlasdan.netnet.notification.DynamicSpeedIconRenderer.getSpeedComponents(2_500_000L, SpeedUnit.BYTES)</ID>
+    <ID>MaxLineLength:SpeedFormatterTest.kt$SpeedFormatterTest$val (zeroVal, zeroUnit) = com.onlasdan.netnet.notification.DynamicSpeedIconRenderer.getSpeedComponents(0L, SpeedUnit.BYTES)</ID>
+    <ID>MaxLineLength:SpeedMonitorScreen.kt$.</ID>
+    <ID>MaxLineLength:SpeedMonitorScreen.kt$border = if (isRunning) androidx.compose.foundation.BorderStroke(1.dp, RoseError.copy(alpha = 0.6f)) else null</ID>
+    <ID>MaxLineLength:SpeedMonitorScreen.kt$if (isServiceRunning &amp;&amp; !isPaused) EmeraldSuccess.copy(alpha = pulseAlpha) else colors.textTertiary</ID>
+    <ID>MaxLineLength:SpeedMonitorScreen.kt$text = if (snapshot.networkName.isNotEmpty() &amp;&amp; snapshot.networkName != "Unknown") snapshot.networkName else snapshot.networkType.title</ID>
+    <ID>MaxLineLength:SpeedSettingsRepository.kt$SpeedSettingsRepository$NotificationColorTheme.valueOf(prefs.getString(KEY_NOTIF_COLOR_THEME, NotificationColorTheme.CYAN.name) ?: NotificationColorTheme.CYAN.name)</ID>
+    <ID>MaxLineLength:SpeedSettingsRepository.kt$SpeedSettingsRepository$NotificationIconStyle.valueOf(prefs.getString(KEY_NOTIF_ICON_STYLE, NotificationIconStyle.DYNAMIC_SPEED.name) ?: NotificationIconStyle.DYNAMIC_SPEED.name)</ID>
+    <ID>MaxLineLength:SpeedSettingsRepository.kt$SpeedSettingsRepository$autoPauseOnScreenOff = try { prefs.getBoolean(KEY_AUTO_PAUSE_SCREEN_OFF, true) } catch (_: Throwable) { true }</ID>
+    <ID>MaxLineLength:SpeedSettingsRepository.kt$SpeedSettingsRepository$isBatterySaverMode = try { prefs.getBoolean(KEY_BATTERY_SAVER_MODE, false) } catch (_: Throwable) { false }</ID>
+    <ID>MaxLineLength:SpeedSettingsRepository.kt$SpeedSettingsRepository$notificationDetailedLayout = try { prefs.getBoolean(KEY_NOTIF_DETAILED_LAYOUT, true) } catch (_: Throwable) { true }</ID>
+    <ID>MaxLineLength:SpeedSettingsRepository.kt$SpeedSettingsRepository$val themeModeStr = try { prefs.getString(KEY_APP_THEME_MODE, defaultMode) ?: defaultMode } catch (_: Throwable) { defaultMode }</ID>
+    <ID>MaxLineLength:SpeedTileService.kt$SpeedTileService$com.onlasdan.netnet.model.NotificationIconStyle.DYNAMIC_SPEED -&gt; R.drawable.ic_speed_indicator</ID>
+    <ID>MaxLineLength:SpeedTileService.kt$SpeedTileService$com.onlasdan.netnet.model.NotificationIconStyle.SPEEDOMETER -&gt; R.drawable.ic_speed_indicator</ID>
+    <ID>MaxLineLength:SpeedTileService.kt$SpeedTileService$val speedStr = SpeedFormatter.formatShortChip(snapshot, settings.displayMode, settings.speedUnit)</ID>
+    <ID>MaxLineLength:TrafficMonitor.kt$TrafficMonitor$@Volatile private var cachedNetworkDetails: Triple&lt;NetworkType, String, Int&gt; = Triple(NetworkType.OFFLINE, "Checking...", 0)</ID>
+    <ID>NestedBlockDepth:NetSpeedForegroundService.kt$NetSpeedForegroundService$override fun onCreate()</ID>
+    <ID>NestedBlockDepth:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider$override fun onReceive(context: Context, intent: Intent)</ID>
+    <ID>NestedBlockDepth:NetworkDiagnosticsHelper.kt$NetworkDiagnosticsHelper$private fun safeGetDiagnostics(context: Context): DetailedNetworkDiagnostics</ID>
+    <ID>NestedBlockDepth:NotificationHelper.kt$NotificationHelper$fun createNotificationChannel(context: Context)</ID>
+    <ID>NestedBlockDepth:ProcessDiagnosticsHelper.kt$ProcessDiagnosticsHelper$fun sampleProcessUsage(context: Context, isServiceActive: Boolean): ProcessResourceUsage</ID>
+    <ID>NestedBlockDepth:TrafficMonitor.kt$TrafficMonitor$private fun getLocalIpAddress(): String</ID>
+    <ID>ReturnCount:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider.Companion$fun updateAllWidgets( context: Context, snapshot: SpeedSnapshot? = null, settings: SpeedSettings? = null )</ID>
+    <ID>ReturnCount:NetworkModels.kt$SpeedFormatter$fun formatCompactSpeed(bytesPerSec: Long, unit: SpeedUnit): String</ID>
+    <ID>ReturnCount:NotificationHelper.kt$NotificationHelper$fun canPostPromotedNotifications(context: Context): Boolean</ID>
+    <ID>ReturnCount:TrafficMonitor.kt$TrafficMonitor$private fun getLocalIpAddress(): String</ID>
+    <ID>ReturnCount:TrafficMonitor.kt$TrafficMonitor$private fun getNetworkDetails(): Triple&lt;NetworkType, String, Int&gt;</ID>
+    <ID>ReturnCount:TrafficMonitor.kt$TrafficMonitor$private fun isVpnActive(): Boolean</ID>
+    <ID>SwallowedException:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider.Companion$e: Throwable</ID>
+    <ID>SwallowedException:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:MainActivity.kt$MainActivity$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:MainViewModel.kt$MainViewModel$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NetSpeedApp.kt$NetSpeedApp$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:NetSpeedApp.kt$NetSpeedApp.Companion$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:NetSpeedForegroundService.kt$NetSpeedForegroundService$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider$e: Exception</ID>
+    <ID>TooGenericExceptionCaught:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:NetSpeedWidgetProvider.kt$NetSpeedWidgetProvider.Companion$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:NotificationHelper.kt$NotificationHelper$e: Throwable</ID>
+    <ID>TooGenericExceptionCaught:OneTimeDiagnosticRunner.kt$OneTimeDiagnosticRunner$e: Exception</ID>
+    <ID>TooManyFunctions:MainViewModel.kt$MainViewModel : AndroidViewModel</ID>
+    <ID>TooManyFunctions:SpeedSettingsRepository.kt$SpeedSettingsRepository</ID>
+    <ID>TooManyFunctions:TrafficMonitor.kt$TrafficMonitor</ID>
+    <ID>UnusedParameter:DataUsageScreen.kt$totalBytes: Long</ID>
+    <ID>UnusedParameter:PingDiagnosticRunner.kt$PingDiagnosticRunner$context: Context</ID>
+    <ID>UnusedParameter:SettingsScreen.kt$onResetTodayUsage: () -&gt; Unit</ID>
+    <ID>UnusedParameter:SpeedMonitorScreen.kt$isRunning: Boolean</ID>
+    <ID>UnusedParameter:Theme.kt$isOled: Boolean = false</ID>
+  </CurrentIssues>
+</SmellBaseline>

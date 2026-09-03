@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Widget Theme Colors (Dark Mode) -->
+    <color name="widget_bg">#F00B0F17</color>
+    <color name="widget_border">#3322D3EE</color>
+    <color name="widget_card_bg">#FF151D2C</color>
+    <color name="widget_text_primary">#FFFFFFFF</color>
+    <color name="widget_text_secondary">#FF94A3B8</color>
+    <color name="widget_text_muted">#FF64748B</color>
+    <color name="widget_chip_bg">#2622D3EE</color>
+    <color name="widget_chip_text">#FF06B6D4</color>
+    <color name="widget_btn_bg">#FF1E293B</color>
+    <color name="widget_download_accent">#FF06B6D4</color>
+    <color name="widget_upload_accent">#FFA855F7</color>
+</resources>
