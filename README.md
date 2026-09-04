@@ -53,7 +53,7 @@ NetSpeedApp (Application: crash log handler, channel, alarm scheduling on boot)
 | Tool | Version |
 |---|---|
 | Android SDK | Platform 36 (Android 16) |
-| JDK | 11+ |
+| JDK | 21+ (Robolectric SDK 36 sandbox requires Java 21) |
 | Gradle wrapper | 9.3.1 (bundled) |
 | AGP / Kotlin | 9.1.1 / 2.2.10 |
 | Device | Android 16+ only (`minSdk = 36`) — deliberate, see [docs/building.md] |

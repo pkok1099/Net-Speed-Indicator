@@ -79,8 +79,10 @@ variables → Actions):
 | `KEY_PASSWORD` | key password (alias `upload`) |
 
 The keystore never lives in the repo — all `*.jks` / `*.keystore` files are
-gitignored. CI uses JDK 17 (Temurin) via `setup-java` + the official Gradle
-action; the Android SDK comes preinstalled on `ubuntu-latest` runners.
+gitignored. CI uses JDK 21 (Temurin) via `setup-java` + the official Gradle
+action — Robolectric 4.16.x needs Java 21+ to run its SDK 36 (Android 16)
+sandbox (`DefaultSdkProvider` throws `Android SDK 36 requires Java 21`
+otherwise); the Android SDK comes preinstalled on `ubuntu-latest` runners.
 
 ## Why minSdk 36 (do not lower)
 
