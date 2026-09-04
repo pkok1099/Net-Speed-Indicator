@@ -34,6 +34,17 @@ jobs:
       - name: Android lint
         run: ./gradlew lint
 
+      - name: Generate debug keystore
+        # debug.keystore is gitignored (it is a local-only signing identity),
+        # but the debug build type signs against ${rootDir}/debug.keystore —
+        # generate a throwaway one on the runner so assembleDebug can sign.
+        run: |
+          keytool -genkeypair -v \
+            -keystore debug.keystore \
+            -storepass android -keypass android \
+            -alias androiddebugkey -keyalg RSA -keysize 2048 -validity 10000 \
+            -dname "CN=Android Debug,O=Android,C=US"
+
       - name: Build debug APK
         run: ./gradlew assembleDebug
 

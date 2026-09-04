@@ -69,7 +69,8 @@ NetSpeedApp (Application: crash log handler, channel, alarm scheduling on boot)
 ```
 
 Debug builds sign with `debug.keystore` in the repo root (gitignored — create
-it if missing; password/alias `android`/`androiddebugkey`).
+it if missing; CI generates a throwaway one per run; password/alias
+`android`/`androiddebugkey`).
 
 Release builds read signing from the environment:
 
