@@ -41,7 +41,7 @@ sections with toggle rows and info tooltips.
 
 | Setting | Default | Effect |
 |---|---|---|
-| `autoPauseOnScreenOff` | `true` | fully pause sampling when screen is off (vs 10s/30s low-frequency) |
+| `autoPauseOnScreenOff` | `true` | fully pause sampling when screen is off (vs 30s/60s low-frequency) |
 | `isBatterySaverMode` | `false` | Smart Battery Saver: disables non-core loops (ping probes, watchdog, daily summary), keeps core cadence |
 
 ## Diagnostics

@@ -874,16 +874,16 @@ fun SettingsScreen(
                             color = colors.textPrimary
                         )
                         val thresholdDisplay = when {
-                            settings.idleThresholdKbps == 0L -> "0 KB/s (throttle only at 0 B/s)"
-                            settings.idleThresholdKbps >= 1024L && settings.idleThresholdKbps % 1024L == 0L ->
-                                "${settings.idleThresholdKbps / 1024L} MB/s (${settings.idleThresholdKbps} KB/s)"
-                            else -> "${settings.idleThresholdKbps} KB/s"
+                            settings.idleThresholdKbPerSec == 0L -> "0 KB/s (throttle only at 0 B/s)"
+                            settings.idleThresholdKbPerSec >= 1024L && settings.idleThresholdKbPerSec % 1024L == 0L ->
+                                "${settings.idleThresholdKbPerSec / 1024L} MB/s (${settings.idleThresholdKbPerSec} KB/s)"
+                            else -> "${settings.idleThresholdKbPerSec} KB/s"
                         }
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(6.dp))
-                                .background(if (settings.idleThresholdKbps > 0) colors.accentPrimary.copy(alpha = 0.15f) else colors.background)
-                                .border(1.dp, if (settings.idleThresholdKbps > 0) colors.accentPrimary.copy(alpha = 0.4f) else colors.cardBorder, RoundedCornerShape(6.dp))
+                                .background(if (settings.idleThresholdKbPerSec > 0) colors.accentPrimary.copy(alpha = 0.15f) else colors.background)
+                                .border(1.dp, if (settings.idleThresholdKbPerSec > 0) colors.accentPrimary.copy(alpha = 0.4f) else colors.cardBorder, RoundedCornerShape(6.dp))
                                 .clickable { showCustomThresholdDialog = true }
                                 .padding(horizontal = 6.dp, vertical = 3.dp)
                         ) {
@@ -891,7 +891,7 @@ fun SettingsScreen(
                                 text = thresholdDisplay,
                                 fontSize = 10.5.sp,
                                 fontWeight = FontWeight.Bold,
-                                color = if (settings.idleThresholdKbps > 0) colors.accentGlow else colors.textSecondary
+                                color = if (settings.idleThresholdKbPerSec > 0) colors.accentGlow else colors.textSecondary
                             )
                         }
                     }
@@ -899,7 +899,7 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.height(2.dp))
 
                     Slider(
-                        value = idleThresholdDrag ?: settings.idleThresholdKbps.toFloat().coerceIn(0f, 5120f),
+                        value = idleThresholdDrag ?: settings.idleThresholdKbPerSec.toFloat().coerceIn(0f, 5120f),
                         onValueChange = { newValue ->
                             idleThresholdDrag = newValue.coerceIn(0f, 5120f)
                         },
@@ -908,7 +908,7 @@ fun SettingsScreen(
                             idleThresholdDrag = null
                             if (dragged != null) {
                                 val rounded = (Math.round(dragged / 50f) * 50).toLong().coerceIn(0L, 5120L)
-                                onUpdateSettings { it.copy(idleThresholdKbps = rounded) }
+                                onUpdateSettings { it.copy(idleThresholdKbPerSec = rounded) }
                             }
                         },
                         valueRange = 0f..5120f,
@@ -941,7 +941,7 @@ fun SettingsScreen(
                                 text = "Freeze Below Threshold",
                                 fontSize = 12.sp,
                                 fontWeight = FontWeight.SemiBold,
-                                color = if (settings.idleThresholdKbps > 0L) colors.textPrimary else colors.textTertiary,
+                                color = if (settings.idleThresholdKbPerSec > 0L) colors.textPrimary else colors.textTertiary,
                                 modifier = Modifier.weight(1f, fill = false)
                             )
                             Spacer(modifier = Modifier.width(4.dp))
@@ -950,8 +950,8 @@ fun SettingsScreen(
                             )
                         }
                         Switch(
-                            checked = settings.isThresholdFreezeEnabled && settings.idleThresholdKbps > 0L,
-                            enabled = settings.idleThresholdKbps > 0L,
+                            checked = settings.isThresholdFreezeEnabled && settings.idleThresholdKbPerSec > 0L,
+                            enabled = settings.idleThresholdKbPerSec > 0L,
                             onCheckedChange = { checked ->
                                 onUpdateSettings { it.copy(isThresholdFreezeEnabled = checked) }
                                 SettingsToggleFeedback.onThresholdFreezeToggled(context, checked)
@@ -1147,7 +1147,7 @@ fun SettingsScreen(
 
             ToggleSettingRow(
                 title = "Screen-Off Deep Sleep (Auto-Pause)",
-                subtitle = "Throttles traffic polling to 10s and suspends notification updates when the screen turns off",
+                subtitle = "Fully pauses traffic sampling while the screen is off — maximum battery saving. Turn off to keep a low-frequency background cadence (30s, or 60s when battery is low)",
                 checked = settings.autoPauseOnScreenOff,
                 testTag = "screen_off_pause_toggle_page",
                 onCheckedChange = { checked ->
@@ -1575,7 +1575,7 @@ fun SettingsScreen(
 
     // Custom Threshold Dialog
     if (showCustomThresholdDialog) {
-        var thresholdInput by remember { mutableStateOf(settings.idleThresholdKbps.toString()) }
+        var thresholdInput by remember { mutableStateOf(settings.idleThresholdKbPerSec.toString()) }
         var isError by remember { mutableStateOf(false) }
 
         AlertDialog(
@@ -1622,7 +1622,7 @@ fun SettingsScreen(
                     onClick = {
                         val parsed = thresholdInput.toLongOrNull()
                         if (parsed != null && parsed in 0L..100000L) {
-                            onUpdateSettings { it.copy(idleThresholdKbps = parsed) }
+                            onUpdateSettings { it.copy(idleThresholdKbPerSec = parsed) }
                             showCustomThresholdDialog = false
                         }
                     },

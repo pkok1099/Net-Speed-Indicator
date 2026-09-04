@@ -112,16 +112,16 @@ internal object SettingsToggleFeedback {
             toast(context, "Hide Notification When Idle: Disabled")
             return
         }
-        val thresholdKbps = currentSettings(context)?.idleThresholdKbps ?: 0L
+        val thresholdKbPerSec = currentSettings(context)?.idleThresholdKbPerSec ?: 0L
         when {
-            thresholdKbps <= 0L ->
+            thresholdKbPerSec <= 0L ->
                 toast(context, "Failed to enable — Speed Threshold is 0 KB/s, so nothing counts as idle")
             !areNotificationsEnabled(context) ->
                 toast(context, "Failed to enable — notifications are blocked for this app")
             !isMonitoringRunning() ->
                 toast(context, "Hide Notification When Idle: Enabled — takes effect when monitoring starts")
             else ->
-                toast(context, "Hide Notification When Idle: Enabled — hides below $thresholdKbps KB/s")
+                toast(context, "Hide Notification When Idle: Enabled — hides below $thresholdKbPerSec KB/s")
         }
     }
 

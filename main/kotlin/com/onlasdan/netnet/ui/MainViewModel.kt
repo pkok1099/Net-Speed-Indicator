@@ -33,7 +33,6 @@ import com.onlasdan.netnet.model.DetailedNetworkDiagnostics
 import com.onlasdan.netnet.model.CompleteNetworkState
 import com.onlasdan.netnet.monitor.NetworkStateManager
 import com.onlasdan.netnet.monitor.ProcessDiagnosticsHelper
-import java.io.InputStream
 import java.net.HttpURLConnection
 import java.net.URL
 
@@ -74,11 +73,22 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
     private val _isSystemPowerSaveMode = MutableStateFlow(NetSpeedWorkManagerHelper.isPowerSaveMode(context))
     val isSystemPowerSaveMode: StateFlow<Boolean> = _isSystemPowerSaveMode.asStateFlow()
 
-    private val _navigationEvent = MutableSharedFlow<String>(extraBufferCapacity = 1)
+    // replay=1: MainActivity.handleIntent() can emit the deep-link target in
+    // onCreate() BEFORE the Compose LaunchedEffect starts collecting — without
+    // replay that emission is silently dropped on a cold start (tapping the
+    // daily-summary notification while the app is dead did nothing).
+    // The collector clears the buffer after handling so stale routes from a
+    // previous session are not re-applied on recomposition.
+    private val _navigationEvent = MutableSharedFlow<String>(replay = 1, extraBufferCapacity = 1)
     val navigationEvent: SharedFlow<String> = _navigationEvent.asSharedFlow()
 
     fun navigateToScreen(route: String) {
         _navigationEvent.tryEmit(route)
+    }
+
+    /** Drops the replay cache after the UI handled the route. */
+    fun consumeNavigationEvent() {
+        _navigationEvent.resetReplayCache()
     }
 
     private var speedTestJob: Job? = null
@@ -93,16 +103,23 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
             }
         }
 
-        // Periodic process telemetry sampler
+        // Periodic process telemetry sampler. Pausable: while the UI is
+        // backgrounded nobody sees the telemetry, but each tick costs a
+        // getProcessMemoryInfo binder IPC plus two power queries — so the
+        // loop sleeps in long intervals until the app returns to the
+        // foreground (driven by TrafficMonitor's app-foreground flag).
         viewModelScope.launch(Dispatchers.Default) {
             while (isActive) {
+                val inForeground = trafficMonitor.isAppInForeground
                 try {
-                    val usage = ProcessDiagnosticsHelper.sampleProcessUsage(context, isServiceRunning.value)
-                    _processUsage.value = usage
-                    _isIgnoringBatteryOptimizations.value = NetSpeedWorkManagerHelper.isIgnoringBatteryOptimizations(context)
-                    _isSystemPowerSaveMode.value = NetSpeedWorkManagerHelper.isPowerSaveMode(context)
+                    if (inForeground) {
+                        val usage = ProcessDiagnosticsHelper.sampleProcessUsage(context, isServiceRunning.value)
+                        _processUsage.value = usage
+                        _isIgnoringBatteryOptimizations.value = NetSpeedWorkManagerHelper.isIgnoringBatteryOptimizations(context)
+                        _isSystemPowerSaveMode.value = NetSpeedWorkManagerHelper.isPowerSaveMode(context)
+                    }
                 } catch (_: Throwable) {}
-                delay(2000L)
+                delay(if (inForeground) 2000L else 15_000L)
             }
         }
     }
@@ -315,18 +332,20 @@ class MainViewModel(application: Application) : AndroidViewModel(application) {
                 // Download a small chunk of test file (5MB or 10MB test data) from Cloudflare CDN to verify traffic meter
                 val url = URL("https://speed.cloudflare.com/__down?bytes=15000000")
                 val connection = url.openConnection() as HttpURLConnection
-                connection.connectTimeout = 4000
-                connection.readTimeout = 6000
-                connection.connect()
+                try {
+                    connection.connectTimeout = 4000
+                    connection.readTimeout = 6000
+                    connection.connect()
 
-                val inputStream: InputStream = connection.inputStream
-                val buffer = ByteArray(16384)
-                var bytesRead: Int
-                while (inputStream.read(buffer).also { bytesRead = it } != -1 && _isTestingSpeed.value) {
-                    // reading traffic generates rx stats
+                    connection.inputStream?.use { inputStream ->
+                        val buffer = ByteArray(16384)
+                        while (inputStream.read(buffer) != -1 && _isTestingSpeed.value) {
+                            // reading traffic generates rx stats
+                        }
+                    }
+                } finally {
+                    connection.disconnect()
                 }
-                inputStream.close()
-                connection.disconnect()
             } catch (_: Exception) {
                 // network test completed or timed out
             } finally {

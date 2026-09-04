@@ -52,6 +52,11 @@ class NetSpeedWidgetProvider : AppWidgetProvider() {
             super.onReceive(context, intent)
             when (intent.action) {
                 ACTION_WIDGET_REFRESH -> {
+                    // goAsync keeps the process alive for the duration of the
+                    // background refresh, replacing the old ad-hoc
+                    // CoroutineScope(Dispatchers.Default) launch (which had
+                    // no lifecycle and could be killed mid-flight).
+                    val pendingResult = goAsync()
                     CoroutineScope(Dispatchers.Default).launch {
                         try {
                             val monitor = TrafficMonitor.getInstance(context)
@@ -59,6 +64,8 @@ class NetSpeedWidgetProvider : AppWidgetProvider() {
                             updateAllWidgets(context, monitor.snapshot.value, repo.settings.value)
                         } catch (e: Throwable) {
                             Log.e(TAG, "Error handling refresh action", e)
+                        } finally {
+                            pendingResult.finish()
                         }
                     }
                 }

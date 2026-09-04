@@ -17,10 +17,22 @@ object ProcessDiagnosticsHelper {
 
     private var lastSampleWallTimeMs = 0L
     private var lastProcessCpuTimeMs = 0L
-    private var serviceStartTimeMs = 0L
 
-    init {
-        serviceStartTimeMs = SystemClock.elapsedRealtime()
+    // Elapsed-realtime stamp of when the monitoring service last transitioned
+    // to running (0 = not started). Replaces the old class-load stamp, which
+    // reported the APP PROCESS uptime as the "service uptime".
+    @Volatile private var serviceStartElapsedMs: Long = 0L
+
+    /** Called by NetSpeedForegroundService when its monitoring actually starts. */
+    fun onServiceStarted() {
+        if (serviceStartElapsedMs == 0L) {
+            serviceStartElapsedMs = SystemClock.elapsedRealtime()
+        }
+    }
+
+    /** Called by NetSpeedForegroundService when the service is fully stopped. */
+    fun onServiceStopped() {
+        serviceStartElapsedMs = 0L
     }
 
     fun sampleProcessUsage(context: Context, isServiceActive: Boolean): ProcessResourceUsage {
@@ -94,7 +106,8 @@ object ProcessDiagnosticsHelper {
             0.005f
         }
 
-        val uptimeSec = (nowWallTime - serviceStartTimeMs) / 1000L
+        val startElapsed = serviceStartElapsedMs
+        val uptimeSec = if (startElapsed > 0L) (nowWallTime - startElapsed) / 1000L else 0L
 
         return ProcessResourceUsage(
             cpuPercent = String.format(Locale.US, "%.2f", calculatedCpu).toFloatOrNull() ?: 0.08f,

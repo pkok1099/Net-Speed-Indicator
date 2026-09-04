@@ -13,7 +13,7 @@ import com.onlasdan.netnet.service.NetSpeedForegroundService
 /**
  * BroadcastReceiver that replaces both WorkManager workers:
  *
- *  - ACTION_WATCHDOG: fires every ~15 minutes. Mirrors NetSpeedKeepAliveWorker behavior —
+ *  - ACTION_WATCHDOG: fires every ~30 minutes. Mirrors NetSpeedKeepAliveWorker behavior —
  *    flushes traffic counters to disk, restarts the foreground speed service if the user
  *    has it enabled but the service was killed by the OS/OEM, then re-arms the next alarm.
  *

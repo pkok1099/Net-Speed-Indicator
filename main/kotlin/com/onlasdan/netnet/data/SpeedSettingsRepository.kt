@@ -30,8 +30,8 @@ data class SpeedSettings(
      *  relayout/post for users who only want the icon indicator. */
     val isMinimalNotificationEnabled: Boolean = false,
     val showStatusBarChip: Boolean = true,
-    val idleThresholdKbps: Long = 0L,
-    /** 0 = never update while below [idleThresholdKbps] (notification frozen until
+    val idleThresholdKbPerSec: Long = 0L,
+    /** 0 = never update while below [idleThresholdKbPerSec] (notification frozen until
      * traffic crosses the threshold). Only valid with a non-zero threshold. */
     val isThresholdFreezeEnabled: Boolean = true,
     val appThemeMode: AppThemeMode = AppThemeMode.SYSTEM,
@@ -121,7 +121,7 @@ class SpeedSettingsRepository(context: Context) {
                 hideWhenIdle = try { prefs.getBoolean(KEY_HIDE_IDLE, false) } catch (_: Throwable) { false },
                 isMinimalNotificationEnabled = try { prefs.getBoolean(KEY_MINIMAL_NOTIFICATION, false) } catch (_: Throwable) { false },
                 showStatusBarChip = try { prefs.getBoolean(KEY_SHOW_CHIP, true) } catch (_: Throwable) { true },
-                idleThresholdKbps = try { prefs.getLong(KEY_IDLE_THRESHOLD_KBPS, 0L) } catch (_: Throwable) { 0L },
+                idleThresholdKbPerSec = try { prefs.getLong(KEY_IDLE_THRESHOLD_KB_PER_SEC, 0L) } catch (_: Throwable) { 0L },
                 isThresholdFreezeEnabled = try { prefs.getBoolean(KEY_THRESHOLD_FREEZE, true) } catch (_: Throwable) { true },
                 appThemeMode = themeMode,
                 isOledTheme = themeMode == AppThemeMode.OLED,
@@ -156,7 +156,7 @@ class SpeedSettingsRepository(context: Context) {
             .putBoolean(KEY_HIDE_IDLE, s.hideWhenIdle)
             .putBoolean(KEY_MINIMAL_NOTIFICATION, s.isMinimalNotificationEnabled)
             .putBoolean(KEY_SHOW_CHIP, s.showStatusBarChip)
-            .putLong(KEY_IDLE_THRESHOLD_KBPS, s.idleThresholdKbps)
+            .putLong(KEY_IDLE_THRESHOLD_KB_PER_SEC, s.idleThresholdKbPerSec)
             .putBoolean(KEY_THRESHOLD_FREEZE, s.isThresholdFreezeEnabled)
             .putString(KEY_APP_THEME_MODE, s.appThemeMode.name)
             .putBoolean(KEY_OLED_THEME, isOled)
@@ -187,10 +187,11 @@ class SpeedSettingsRepository(context: Context) {
     @Volatile private var lastDiskFlushTime: Long = 0L
 
     init {
-        initMemoryCache()
+        initMemoryCacheLocked()
     }
 
-    private fun initMemoryCache() {
+    /** Caller must hold the repository monitor (constructor holds it implicitly). */
+    private fun initMemoryCacheLocked() {
         val todayKey = getTodayKey()
         cachedTodayKey = todayKey
         cachedRx = prefs.getLong("today_rx_$todayKey", 0L)
@@ -202,11 +203,19 @@ class SpeedSettingsRepository(context: Context) {
         lastDiskFlushTime = System.currentTimeMillis()
     }
 
+    // @Synchronized: called both from @Synchronized paths (recordUsageDelta /
+    // flushUsageToDisk / getTodayUsage) and internally — the day rollover must
+    // not swap the memory cache while another thread is mid delta-booking.
+    @Synchronized
     private fun ensureTodayKeyAligned(): String {
         val currentKey = getTodayKey()
         if (currentKey != cachedTodayKey) {
-            flushUsageToDisk()
-            initMemoryCache()
+            // Persist the OLD day's counters under the OLD key before the
+            // cache re-bases on the new day (only when something is pending).
+            if (hasPendingDiskWrites) {
+                doFlushLocked(key = cachedTodayKey.ifEmpty { currentKey })
+            }
+            initMemoryCacheLocked()
         }
         return currentKey
     }
@@ -265,6 +274,10 @@ class SpeedSettingsRepository(context: Context) {
         lastDiskFlushTime = System.currentTimeMillis()
     }
 
+    /** @Synchronized: called from the UI thread while the monitor coroutine can
+     *  be mid recordUsageDelta — without the lock the zeroing races a pending
+     *  delta and the freshly-zeroed cache resurrects old bytes. */
+    @Synchronized
     fun resetTodayUsage() {
         val todayKey = getTodayKey()
         cachedTodayKey = todayKey
@@ -393,7 +406,7 @@ class SpeedSettingsRepository(context: Context) {
         private const val KEY_HIDE_IDLE = "key_hide_idle"
         private const val KEY_MINIMAL_NOTIFICATION = "key_minimal_notification"
         private const val KEY_SHOW_CHIP = "key_show_chip"
-        private const val KEY_IDLE_THRESHOLD_KBPS = "key_idle_threshold_kbps"
+        private const val KEY_IDLE_THRESHOLD_KB_PER_SEC = "key_idle_threshold_kbps" // legacy key name, kept for persistence compat
         private const val KEY_THRESHOLD_FREEZE = "key_threshold_freeze"
         private const val KEY_APP_THEME_MODE = "key_app_theme_mode"
         private const val KEY_OLED_THEME = "key_oled_theme"

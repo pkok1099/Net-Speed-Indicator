@@ -89,7 +89,7 @@ The service must survive OEM task killers. Three mechanisms cooperate:
    (when `autoStartOnBoot` is on), enqueues an immediate watchdog check, and
    re-arms the periodic watchdog + daily summary alarms.
 2. **Watchdog alarm** (`work/NetSpeedAlarmReceiver.kt`, action
-   `WATCHDOG_ALARM`) — fires every ~15 minutes and re-checks that the
+   `WATCHDOG_ALARM`) — fires every ~30 minutes and re-checks that the
    foreground service is alive, restarting it if needed. It re-arms itself
    after each fire, because:
    - `AlarmManager.setRepeating` ignores Doze, and
@@ -121,7 +121,7 @@ binding or broadcast.
 Screen-state policy lives in the service:
 
 - `ACTION_SCREEN_OFF` → flush usage to disk; then either full pause
-  (`autoPauseOnScreenOff`) or 10s screen-off cadence (30s if battery low).
+  (`autoPauseOnScreenOff`) or 30s screen-off cadence (60s if battery low).
 - `ACTION_SCREEN_ON` / `USER_PRESENT` → wake the monitor for an immediate
   sample and refresh notification + widget.
 - Power-save / device-idle broadcasts only re-derive the low-frequency

@@ -123,7 +123,9 @@ fun MainScreen(
     }
 
     // Listen for navigation events from the ViewModel (used by MainActivity to deep-link
-    // to DataUsage when the user taps the daily-summary notification).
+    // to DataUsage when the user taps the daily-summary notification). The flow has
+    // replay=1 so a cold-start emission is not lost; drain the replay cache after the
+    // first handling so a stale route never re-fires across recompositions.
     LaunchedEffect(Unit) {
         viewModel.navigationEvent.collect { targetRoute ->
             val target = when (targetRoute) {
@@ -135,6 +137,7 @@ fun MainScreen(
                 previousScreen = currentScreen
                 currentScreen = target
             }
+            viewModel.consumeNavigationEvent()
         }
     }
 

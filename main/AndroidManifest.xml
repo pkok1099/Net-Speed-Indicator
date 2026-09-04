@@ -18,6 +18,8 @@
     <application
         android:name=".NetSpeedApp"
         android:allowBackup="true"
+        android:fullBackupContent="@xml/backup_rules"
+        android:dataExtractionRules="@xml/data_extraction_rules"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
@@ -76,10 +78,16 @@
             </intent-filter>
         </receiver>
 
-        <!-- Home Screen App Widget -->
+        <!-- Home Screen App Widget.
+             exported="false": the custom WIDGET_REFRESH / WIDGET_TOGGLE_SERVICE
+             actions are only ever sent by this app's own PendingIntents (set via
+             setOnClickPendingIntent). exported="true" allowed ANY third-party
+             app to broadcast those actions and spam widget refreshes / toggle
+             the monitor service. APPWIDGET_UPDATE from the system launcher is
+             still delivered: the system is exempt from exported gating. -->
         <receiver
             android:name=".widget.NetSpeedWidgetProvider"
-            android:exported="true"
+            android:exported="false"
             android:label="@string/widget_name">
             <intent-filter>
                 <action android:name="android.appwidget.action.APPWIDGET_UPDATE" />

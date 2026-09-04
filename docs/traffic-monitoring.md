@@ -81,20 +81,23 @@ Only the **displayed** rate is smoothed. Byte accumulators and the usage
 repository consume the *raw* deltas, so session totals and data-usage
 accounting stay exact.
 
-## Adaptive sampling cadence
+## Adaptive sampling cadence (battery-first ladder)
 
 `computeDelayMs()` decides the sleep between ticks:
 
 | State | Cadence |
 |---|---|
-| Screen off | 10 s (30 s if battery low) |
-| Screen on, sustained pure silence (~30 zero-byte ticks) | 5 s |
+| Screen off | 30 s (60 s if battery low) |
+| Screen on, sustained pure silence (~30 zero-byte ticks) | 15 s |
+| Screen on, ~10 more silent 15 s ticks | 60 s |
+| Screen on, ~10 more silent 60 s ticks | 120 s |
 | Screen on, normal | user interval (default 1 s) |
 
-Any byte arriving resets the idle counter; the very next tick already
-measures the new traffic, so reaction delay is bounded by one idle tick
-(≤ 5 s). Smart Battery Saver deliberately does *not* touch the core cadence —
-it only disables non-core loops (ping probes, watchdog, daily summary).
+Any byte arriving resets the whole ladder; the very next tick already
+measures the new traffic, so reaction delay is bounded by one current-rung
+tick (≤ 120 s worst case, ~15 s typical). Smart Battery Saver deliberately
+does *not* touch the core cadence — it only disables non-core loops (ping
+probes, watchdog, daily summary).
 
 ## Non-comparable windows
 

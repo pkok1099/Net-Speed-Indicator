@@ -20,8 +20,8 @@ import android.util.Log
  * a tiny BroadcastReceiver is plenty — and the savings are ~200 KB compressed.
  *
  * Behavior parity with the old WorkManager version:
- *   - schedulePeriodicWatchdog: AlarmManager.setExactAndAllowWhileIdle every 15 min
- *     (was WorkManager PeriodicWorkRequest at 15 min)
+ *   - schedulePeriodicWatchdog: AlarmManager.setAndAllowWhileIdle every 30 min
+ *     (was WorkManager PeriodicWorkRequest at 15 min (now 30))
  *   - enqueueImmediateWatchdog: AlarmManager.set — fires once, immediately
  *     (was WorkManager OneTimeWorkRequest)
  *   - scheduleDailySummaryWorker: AlarmManager.setWindow at the user's hour:minute
@@ -40,15 +40,20 @@ object NetSpeedWorkManagerHelper {
     private const val WATCHDOG_IMMEDIATE_REQUEST_CODE = 1002
     private const val DAILY_SUMMARY_REQUEST_CODE = 1003
 
-    // 15 minutes in ms (matches the old WorkManager PeriodicWorkRequest interval).
-    private const val WATCHDOG_INTERVAL_MS = 15L * 60L * 1000L
+    // 30 minutes in ms. Battery-first: the watchdog exists ONLY to resurrect
+    // the service after an OS/OEM kill — a 30-minute recovery window is an
+    // acceptable trade for halving the device wake-ups the old 15-minute
+    // alarm caused. The service itself keeps the notification current; the
+    // watchdog just checks "is it alive" (a SharedPreferences read + maybe
+    // one startForegroundService call).
+    private const val WATCHDOG_INTERVAL_MS = 30L * 60L * 1000L
 
     // ---------------------------------------------------------------
     // Watchdog: keep the foreground speed service alive
     // ---------------------------------------------------------------
 
     /**
-     * Schedule a recurring keep-alive alarm that fires every ~15 minutes to check
+     * Schedule a recurring keep-alive alarm that fires every ~30 minutes to check
      * that the speed foreground service is still running.
      *
      * Battery policy (per official Android guidance): a standard utility app must
@@ -72,7 +77,7 @@ object NetSpeedWorkManagerHelper {
             // Self-rescheduling: NetSpeedAlarmReceiver re-arms the next alarm after firing,
             // so this acts like a periodic alarm (AlarmManager.setRepeating does NOT respect
             // Doze, but setAndAllowWhileIdle + self-reschedule does).
-            Log.d(TAG, "Periodic watchdog alarm scheduled (next fire in 15 min).")
+            Log.d(TAG, "Periodic watchdog alarm scheduled (next fire in 30 min).")
         } catch (e: Throwable) {
             Log.e(TAG, "Failed to schedule periodic watchdog alarm", e)
         }

@@ -29,7 +29,7 @@ class BootReceiver : BroadcastReceiver() {
                     }
                     // Only arm the periodic keep-alive when the foreground
                     // service is actually being started; scheduling it for a
-                    // disabled service just wakes the device every 15 minutes
+                    // disabled service just wakes the device every 30 minutes
                     // for a no-op check.
                     NetSpeedWorkManagerHelper.schedulePeriodicWatchdog(context)
                 }

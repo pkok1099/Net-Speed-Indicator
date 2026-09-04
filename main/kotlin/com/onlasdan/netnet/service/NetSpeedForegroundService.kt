@@ -55,6 +55,9 @@ class NetSpeedForegroundService : Service() {
                     isScreenOn = false
                     // Flush any pending disk writes when screen turns off
                     settingsRepo.flushUsageToDisk()
+                    // Re-check the battery level only at the (rare) screen
+                    // transition — see refreshBatteryLowState().
+                    refreshBatteryLowState()
                     if (autoPause) {
                         // Smart Battery Saver: Full pause when screen is off
                         trafficMonitor.stop()
@@ -68,6 +71,7 @@ class NetSpeedForegroundService : Service() {
                 }
                 Intent.ACTION_SCREEN_ON, Intent.ACTION_USER_PRESENT -> {
                     isScreenOn = true
+                    refreshBatteryLowState()
                     if (autoPause && !isPaused) {
                         trafficMonitor.start(settingsRepo.settings.value.updateIntervalMs)
                     }
@@ -82,6 +86,7 @@ class NetSpeedForegroundService : Service() {
                     if (isPowerSave) {
                         settingsRepo.flushUsageToDisk()
                     }
+                    refreshBatteryLowState()
                     // Screen state is the source of truth here; a power-save
                     // broadcast arriving while the screen is OFF must not
                     // resurrect the auto-paused monitor (it only re-derives the
@@ -90,27 +95,36 @@ class NetSpeedForegroundService : Service() {
                         trafficMonitor.setScreenState(isScreenOn)
                     }
                 }
-                // Android 16 (API 36) battery capacity level: when the system
-                // reports a LOW battery state it expects background jobs to be
-                // limited. Extend the screen-off sampling cadence and stop the
-                // in-app ping probe entirely until the level recovers.
-                Intent.ACTION_BATTERY_CHANGED -> {
-                    val level = intent?.getIntExtra(BatteryManager.EXTRA_LEVEL, -1) ?: -1
-                    val scale = intent?.getIntExtra(BatteryManager.EXTRA_SCALE, -1) ?: -1
-                    val capacityLevel = if (Build.VERSION.SDK_INT >= 36) {
-                        intent?.getIntExtra(BatteryManager.EXTRA_CAPACITY_LEVEL, -1) ?: -1
-                    } else {
-                        -1
-                    }
-                    val isBatteryLow = if (Build.VERSION.SDK_INT >= 36 && capacityLevel >= 0) {
-                        capacityLevel <= BatteryManager.BATTERY_CAPACITY_LEVEL_LOW
-                    } else {
-                        level >= 0 && scale > 0 && (level.toFloat() / scale) <= 0.15f
-                    }
-                    trafficMonitor.setBatteryLow(isBatteryLow)
-                }
             }
         }
+    }
+
+    /**
+     * Reads the current battery capacity level ONCE from the sticky
+     * ACTION_BATTERY_CHANGED broadcast (no receiver registration, no
+     * wake-ups) and pushes the low↔normal transition to the monitor.
+     *
+     * Replaces the old permanently-registered ACTION_BATTERY_CHANGED
+     * receiver, which fired on every level/temperature/voltage step but
+     * whose only consumer was the rare isBatteryLow flip.
+     */
+    private fun refreshBatteryLowState() {
+        try {
+            val sticky = registerReceiver(null, IntentFilter(Intent.ACTION_BATTERY_CHANGED)) ?: return
+            val level = sticky.getIntExtra(BatteryManager.EXTRA_LEVEL, -1)
+            val scale = sticky.getIntExtra(BatteryManager.EXTRA_SCALE, -1)
+            val capacityLevel = if (Build.VERSION.SDK_INT >= 36) {
+                sticky.getIntExtra(BatteryManager.EXTRA_CAPACITY_LEVEL, -1)
+            } else {
+                -1
+            }
+            val isBatteryLow = if (Build.VERSION.SDK_INT >= 36 && capacityLevel >= 0) {
+                capacityLevel <= BatteryManager.BATTERY_CAPACITY_LEVEL_LOW
+            } else {
+                level >= 0 && scale > 0 && (level.toFloat() / scale) <= 0.15f
+            }
+            trafficMonitor.setBatteryLow(isBatteryLow)
+        } catch (_: Throwable) {}
     }
 
     override fun onCreate() {
@@ -170,17 +184,20 @@ class NetSpeedForegroundService : Service() {
             android.util.Log.e("NetSpeedService", "Error in onCreate startForeground", e)
         }
 
-        // Register screen state & power management listener for battery conservation
+        // Register screen state & power management listener for battery conservation.
+        //
+        // BATTERY-FIRST: ACTION_BATTERY_CHANGED is deliberately NOT registered
+        // permanently — the system broadcasts it on every level/temperature/voltage
+        // step (every few seconds while charging), but the app only cares about
+        // the rare low↔normal CAPACITY transitions. Instead the current state is
+        // read on demand via a null-receiver sticky query (zero wake-ups), at
+        // service start and on every screen on/off + power-save transition.
         try {
             val screenFilter = IntentFilter().apply {
                 addAction(Intent.ACTION_SCREEN_OFF)
                 addAction(Intent.ACTION_SCREEN_ON)
                 addAction(Intent.ACTION_USER_PRESENT)
                 addAction(PowerManager.ACTION_POWER_SAVE_MODE_CHANGED)
-                // Sticky broadcast: registered receivers get the current battery
-                // state immediately, so isBatteryLow starts accurate without an
-                // extra query.
-                addAction(Intent.ACTION_BATTERY_CHANGED)
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                     addAction(PowerManager.ACTION_DEVICE_IDLE_MODE_CHANGED)
                 }
@@ -191,6 +208,9 @@ class NetSpeedForegroundService : Service() {
                 registerReceiver(screenReceiver, screenFilter)
             }
         } catch (_: Throwable) {}
+
+        // Seed the battery-low state once from the sticky broadcast.
+        refreshBatteryLowState()
 
         // Smart Battery Saver observer — when battery saver is toggled ON/OFF, we cancel or
         // re-schedule WorkManager watchdog & daily summary workers so that ONLY the core
@@ -293,6 +313,7 @@ class NetSpeedForegroundService : Service() {
         try {
             isPaused = false
             _isPausedState.value = false
+            com.onlasdan.netnet.monitor.ProcessDiagnosticsHelper.onServiceStarted()
 
             val initialSettings = settingsRepo.settings.value
             trafficMonitor.start(initialSettings.updateIntervalMs)
@@ -317,7 +338,7 @@ class NetSpeedForegroundService : Service() {
                                 // Split signature: settings changes must ALWAYS post
                                 // immediately (user just toggled something); only the
                                 // speed-only portion participates in idle throttling.
-                                val settingsSignature = "${snapshot.networkName}_${settings.displayMode}_${settings.speedUnit}_${settings.notificationIconStyle}_${settings.notificationColorTheme}_${settings.showStatusBarChip}_${settings.notificationDetailedLayout}_${settings.hideWhenIdle}_${settings.isMinimalNotificationEnabled}_${settings.idleThresholdKbps}_${settings.isThresholdFreezeEnabled}_${settings.isStuckDetectorEnabled}_${settings.stuckDetectorIntervalSec}"
+                                val settingsSignature = "${snapshot.networkName}_${settings.displayMode}_${settings.speedUnit}_${settings.notificationIconStyle}_${settings.notificationColorTheme}_${settings.showStatusBarChip}_${settings.notificationDetailedLayout}_${settings.hideWhenIdle}_${settings.isMinimalNotificationEnabled}_${settings.idleThresholdKbPerSec}_${settings.isThresholdFreezeEnabled}_${settings.isStuckDetectorEnabled}_${settings.stuckDetectorIntervalSec}"
 
                                 // ALWAYS-MINIMAL notification: the rendered body does
                                 // not depend on speed at all (icon-only) — rebuilding it
@@ -335,8 +356,8 @@ class NetSpeedForegroundService : Service() {
                                 // threshold > 0 => below it counts as idle (the user
                                 // declared they don't care about per-second updates
                                 // there); threshold 0 => only true 0 B/s throttles.
-                                val thresholdBytes = settings.idleThresholdKbps * 1024L
-                                val isBelowThreshold = settings.idleThresholdKbps > 0L &&
+                                val thresholdBytes = settings.idleThresholdKbPerSec * 1024L
+                                val isBelowThreshold = settings.idleThresholdKbPerSec > 0L &&
                                         (dl + ul) < thresholdBytes
                                 val isNotificationIdle = if (isBelowThreshold) {
                                     true
@@ -431,6 +452,7 @@ class NetSpeedForegroundService : Service() {
         try {
             _isRunning.value = false
             _isPausedState.value = false
+            com.onlasdan.netnet.monitor.ProcessDiagnosticsHelper.onServiceStopped()
             collectorJob?.cancel()
             batterySaverObserverJob?.cancel()
             settingsRepo.flushUsageToDisk()
@@ -444,6 +466,7 @@ class NetSpeedForegroundService : Service() {
     override fun onDestroy() {
         _isRunning.value = false
         _isPausedState.value = false
+        com.onlasdan.netnet.monitor.ProcessDiagnosticsHelper.onServiceStopped()
         collectorJob?.cancel()
         batterySaverObserverJob?.cancel()
         settingsRepo.flushUsageToDisk()
@@ -483,13 +506,12 @@ class NetSpeedForegroundService : Service() {
                 NetSpeedWorkManagerHelper.schedulePeriodicWatchdog(context)
             } catch (_: Throwable) {}
         }
-
         fun stopService(context: Context) {
             try {
                 val intent = Intent(context, NetSpeedForegroundService::class.java).apply {
                     action = ACTION_STOP
                 }
-                context.startService(intent)
+                dispatchServiceIntent(context, intent)
                 // Cancel WorkManager watchdog when monitoring is explicitly turned off
                 NetSpeedWorkManagerHelper.cancelWatchdog(context)
             } catch (_: Throwable) {}
@@ -500,7 +522,7 @@ class NetSpeedForegroundService : Service() {
                 val intent = Intent(context, NetSpeedForegroundService::class.java).apply {
                     action = if (currentlyPaused) ACTION_RESUME else ACTION_PAUSE
                 }
-                context.startService(intent)
+                dispatchServiceIntent(context, intent)
             } catch (_: Throwable) {}
         }
 
@@ -509,8 +531,31 @@ class NetSpeedForegroundService : Service() {
                 val intent = Intent(context, NetSpeedForegroundService::class.java).apply {
                     action = ACTION_RESET_SESSION
                 }
-                context.startService(intent)
+                dispatchServiceIntent(context, intent)
             } catch (_: Throwable) {}
+        }
+
+        /**
+         * Delivers a control action (STOP/PAUSE/RESUME/RESET) to the service.
+         *
+         * startService() throws IllegalStateException when invoked from the
+         * background on Android 8+ (widget toggle, QS tile path, etc.) and the
+         * surrounding try/catch would swallow it — the button silently did
+         * nothing. startForegroundService() is always legal and safe here:
+         * the service is (or is about to be) a foreground service and
+         * onCreate() unconditionally calls startForeground() within the
+         * 5-second window, so no ANR/crash can result. If even that fails
+         * (e.g. the app is in the background-start temporary allowlist gap),
+         * fall back to startService().
+         */
+        private fun dispatchServiceIntent(context: Context, intent: Intent) {
+            try {
+                context.startForegroundService(intent)
+            } catch (_: Throwable) {
+                try {
+                    context.startService(intent)
+                } catch (_: Throwable) {}
+            }
         }
     }
 }

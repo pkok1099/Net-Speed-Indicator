@@ -69,8 +69,30 @@ private const val MIN_DELAY_MS = 50L
  */
 private const val IDLE_TICKS_BEFORE_STRETCH = 30
 
-/** Sampling cadence while fully idle (0 B/s sustained). */
-private const val IDLE_SAMPLING_MS = 5_000L
+/**
+ * Battery-first background ladder. The chip in the status bar is the product;
+ * per-second precision while the screen is OFF is not. Cadence stretches
+ * aggressively with sustained silence so a backgrounded, idle device pays a
+ * handful of counter reads per minute instead of one per second:
+ *
+ *   silence:      user cadence → 15s (IDLE) → 60s (DEEP) → 120s (ULTRA)
+ *   any byte:     instantly back to the user cadence
+ *   screen off:   30s (60s if battery low) regardless of silence
+ */
+internal const val IDLE_SAMPLING_MS = 15_000L
+internal const val DEEP_IDLE_SAMPLING_MS = 60_000L
+internal const val ULTRA_IDLE_SAMPLING_MS = 120_000L
+
+/** Ticks of sustained 15s-cadence silence before stretching to DEEP. */
+internal const val DEEP_IDLE_TICKS = 10
+
+/** Ticks of sustained 60s-cadence silence before stretching to ULTRA. */
+internal const val ULTRA_IDLE_TICKS = 10
+
+/** Screen-off sampling cadence (background service only needs to keep the
+ *  notification/widget roughly current). Doubled when the battery is low. */
+internal const val SCREEN_OFF_SAMPLING_MS = 30_000L
+internal const val SCREEN_OFF_BATTERY_LOW_SAMPLING_MS = 60_000L
 
 /**
  * Converts a validated byte counter delta to bytes/second. The elapsed window
@@ -235,8 +257,14 @@ class TrafficMonitor(private val context: Context) {
     private var prevDeltaTx: Long = 0L
     private var prevDtMs: Long = 0L
 
-    /** Consecutive ticks with zero bytes — drives adaptive idle sampling. */
+    /** Consecutive ticks with zero bytes — drives the adaptive idle ladder. */
     private var idleTickCount: Int = 0
+
+    /** Consecutive 15s-cadence silent ticks — drives the DEEP→ULTRA stretch. */
+    private var deepIdleTickCount: Int = 0
+
+    /** True while the cadence sits at ULTRA — any traffic resets everything. */
+    private var isUltraIdle: Boolean = false
 
     /** Per-interface previous rx/tx counters for the VPN (physical sum) basis. */
     private val ifaceCounters = HashMap<String, Pair<Long, Long>>()
@@ -253,7 +281,7 @@ class TrafficMonitor(private val context: Context) {
     @Volatile private var isScreenOn: Boolean = true
     @Volatile private var currentIntervalMs: Long = 1000L
     @Volatile private var isBatteryLow: Boolean = false
-    @Volatile private var isAppInForeground: Boolean = false
+    @Volatile private var appForegroundFlag: Boolean = false
     private val resetRequestCounter = AtomicLong(0L)
     @Volatile private var resetCompletedCounter = 0L
 
@@ -356,10 +384,15 @@ class TrafficMonitor(private val context: Context) {
      * widget keep running untouched.
      */
     fun setAppForeground(inForeground: Boolean) {
-        if (isAppInForeground == inForeground) return
-        isAppInForeground = inForeground
+        if (appForegroundFlag == inForeground) return
+        appForegroundFlag = inForeground
         networkStateManager.setAppForeground(inForeground)
     }
+
+    /** Read-only view of the app-foreground lifecycle flag (UI telemetry
+     *  pollers use it to pause their work while nobody is looking). */
+    val isAppInForeground: Boolean
+        get() = appForegroundFlag
 
     private fun relaunchMonitorJobLocked() {
         val previousJob = monitorJob
@@ -412,15 +445,18 @@ class TrafficMonitor(private val context: Context) {
      * exactly at the user's configured interval. Only screen state and a LOW
      * battery capacity (API 36) stretch the screen-off cadence.
      *
-     * ADAPTIVE IDLE: after ~30 consecutive ticks of exactly 0 B/s the cadence
-     * stretches to 5s — a silent counter cannot produce new information, so
-     * the extra wake-ups are pure waste. Any byte arriving resets the counter
-     * and the very next tick already measures the new traffic, so the
-     * reaction delay is bounded by one idle tick (<= 5s).
+     * ADAPTIVE IDLE LADDER (battery-first): user cadence → 15s after ~30s of
+     * silence → 60s after ~10 min more → 120s after ~10 min more. A silent
+     * counter cannot produce new information, so the extra wake-ups are pure
+     * battery waste. Any byte arriving resets the ladder and the very next
+     * tick already measures the new traffic, so the reaction delay is bounded
+     * by ONE current-ladder tick (≤ 120s worst case, ~15s typical).
      */
     private fun computeDelayMs(): Long {
         return when {
-            !isScreenOn -> if (isBatteryLow) 30_000L else 10_000L
+            !isScreenOn -> if (isBatteryLow) SCREEN_OFF_BATTERY_LOW_SAMPLING_MS else SCREEN_OFF_SAMPLING_MS
+            isUltraIdle -> ULTRA_IDLE_SAMPLING_MS
+            deepIdleTickCount >= DEEP_IDLE_TICKS -> DEEP_IDLE_SAMPLING_MS
             idleTickCount >= IDLE_TICKS_BEFORE_STRETCH -> IDLE_SAMPLING_MS
             else -> currentIntervalMs
         }
@@ -478,6 +514,8 @@ class TrafficMonitor(private val context: Context) {
             prevDeltaTx = 0L
             prevDtMs = 0L
             idleTickCount = 0
+            deepIdleTickCount = 0
+            isUltraIdle = false
             historyPoints.clear()
             _history.value = emptyList()
         }
@@ -515,13 +553,26 @@ class TrafficMonitor(private val context: Context) {
         prevDeltaTx = reading.deltaTx
         prevDtMs = dtMs
 
-        // Adaptive idle sampling: only pure silence (0 bytes BOTH directions)
-        // counts toward stretching the cadence; any real traffic resets it and
+        // Adaptive idle ladder: only pure silence (0 bytes BOTH directions)
+        // climbs the cadence ladder; any real traffic resets EVERY rung and
         // the loop returns to the user interval on the NEXT schedule tick.
+        //   0..29 silent 1s ticks  -> user cadence (notification still
+        //                              refreshes via its own idle throttle)
+        //   30th silent tick        -> 15s cadence
+        //   10 more silent 15s ticks (~2.5 min) -> 60s cadence
+        //   10 more silent 60s ticks (~10 min)  -> 120s cadence
         if (reading.deltaRx == 0L && reading.deltaTx == 0L) {
             idleTickCount++
+            if (idleTickCount >= IDLE_TICKS_BEFORE_STRETCH) {
+                deepIdleTickCount++
+                if (deepIdleTickCount >= DEEP_IDLE_TICKS + ULTRA_IDLE_TICKS) {
+                    isUltraIdle = true
+                }
+            }
         } else {
             idleTickCount = 0
+            deepIdleTickCount = 0
+            isUltraIdle = false
         }
 
         sessionRxAccumulator += reading.deltaRx
@@ -700,18 +751,7 @@ class TrafficMonitor(private val context: Context) {
     }
 
     private fun isVirtualInterface(name: String): Boolean {
-        return name.startsWith("tun") ||
-                name.startsWith("tap") ||
-                name.startsWith("p2p") ||
-                name.startsWith("dummy") ||
-                name.startsWith("lo") ||
-                name.startsWith("sit") ||
-                name.startsWith("ipsec") ||
-                name.startsWith("ifb") ||
-                name.startsWith("ppp") ||
-                name.startsWith("vbox") ||
-                name.startsWith("swlan") ||
-                name.contains("vpn")
+        return InterfaceClassifier.isVirtualInterface(name)
     }
 
     companion object {

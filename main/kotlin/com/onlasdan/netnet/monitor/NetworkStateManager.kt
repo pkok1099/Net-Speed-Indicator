@@ -17,6 +17,7 @@ import com.onlasdan.netnet.model.NetworkType
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -26,12 +27,12 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.sync.Mutex
 import kotlinx.coroutines.sync.withLock
 import kotlinx.coroutines.withContext
+import kotlinx.coroutines.withTimeoutOrNull
 import java.net.Inet4Address
 import java.net.Inet6Address
 import java.net.InetSocketAddress
 import java.net.NetworkInterface
 import java.net.Socket
-import java.util.Locale
 import kotlin.math.abs
 import kotlin.math.roundToInt
 
@@ -68,23 +69,25 @@ class NetworkStateManager private constructor(private val context: Context) {
 
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
-            refreshConnectivityStateAsync()
+            scheduleConnectivityRefresh()
         }
 
         override fun onCapabilitiesChanged(network: Network, networkCapabilities: NetworkCapabilities) {
-            refreshConnectivityStateAsync()
+            // Fires very frequently (every Wi-Fi signal-strength change, i.e.
+            // every few seconds). Debounced — see scheduleConnectivityRefresh.
+            scheduleConnectivityRefresh()
         }
 
         override fun onLinkPropertiesChanged(network: Network, linkProperties: android.net.LinkProperties) {
-            refreshConnectivityStateAsync()
+            scheduleConnectivityRefresh()
         }
 
         override fun onLost(network: Network) {
-            refreshConnectivityStateAsync()
+            scheduleConnectivityRefresh()
         }
 
         override fun onUnavailable() {
-            refreshConnectivityStateAsync()
+            scheduleConnectivityRefresh()
         }
     }
 
@@ -208,14 +211,53 @@ class NetworkStateManager private constructor(private val context: Context) {
         latency
     }
 
-    private fun refreshConnectivityStateAsync() {
-        scope.launch(Dispatchers.IO) {
-            val currentPing = _networkState.value.pingMs
-            val newState = computeComprehensiveNetworkState(currentPing)
-            stateMutex.withLock {
-                _networkState.value = newState
+    /**
+     * Debounced connectivity refresh. Each network callback can fire several
+     * times per second (onCapabilitiesChanged alone fires on every Wi-Fi RSSI
+     * step), and every refresh runs the full computeComprehensiveNetworkState
+     * pass (NetworkInterface enumeration + WifiInfo + Telephony queries) before
+     * fanning out into 4+ StateFlow collectors. A conflated channel + a short
+     * delay coalesces the burst into ONE recomputation per quiet window.
+     */
+    private val refreshRequestChannel = Channel<Unit>(Channel.CONFLATED)
+
+    private var refreshDebounceJob: Job? = null
+
+    private fun scheduleConnectivityRefresh() {
+        // Battery gate: while the screen is OFF nobody renders the network
+        // state, and each refresh costs a NetworkInterface enumeration +
+        // WifiInfo/Telephony queries. Park the request instead of recomputing;
+        // screen-on (setScreenState) schedules a fresh refresh anyway.
+        if (!isScreenOn) return
+        refreshRequestChannel.trySend(Unit)
+        // Single-writer swap guarded by the same monitor as the ping-job paths.
+        synchronized(updatePingLock) {
+            if (refreshDebounceJob?.isActive == true) return
+            refreshDebounceJob = scope.launch(Dispatchers.IO) {
+                try {
+                    // Debounce window: absorb any callback burst.
+                    refreshRequestChannel.receive()
+                    delay(500L)
+                    // Drain any requests that arrived during the window, keep the latest.
+                    while (true) {
+                        val more = withTimeoutOrNull(200L) { refreshRequestChannel.receive() }
+                        if (more == null) break
+                    }
+                    val currentPing = _networkState.value.pingMs
+                    val newState = computeComprehensiveNetworkState(currentPing)
+                    stateMutex.withLock {
+                        _networkState.value = newState
+                    }
+                } catch (_: Throwable) {
+                    // Channel closed or scope cancelled — nothing to do.
+                }
             }
         }
+    }
+
+    /** @see scheduleConnectivityRefresh — retained name for the screen-on path. */
+    private fun refreshConnectivityStateAsync() {
+        scheduleConnectivityRefresh()
     }
 
     private fun refreshConnectivityStateSync() {
@@ -588,19 +630,7 @@ class NetworkStateManager private constructor(private val context: Context) {
     }
 
     private fun isVirtualIf(name: String): Boolean {
-        val lower = name.lowercase(Locale.US)
-        return lower.startsWith("tun") ||
-                lower.startsWith("tap") ||
-                lower.startsWith("p2p") ||
-                lower.startsWith("dummy") ||
-                lower.startsWith("lo") ||
-                lower.startsWith("sit") ||
-                lower.startsWith("ipsec") ||
-                lower.startsWith("ifb") ||
-                lower.startsWith("ppp") ||
-                lower.startsWith("vbox") ||
-                lower.startsWith("swlan") ||
-                lower.contains("vpn")
+        return InterfaceClassifier.isVirtualInterface(name)
     }
 
     companion object {

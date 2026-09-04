@@ -46,6 +46,20 @@ object NotificationHelper {
             Notification.Builder::class.java.getMethod("setShortCriticalText", CharSequence::class.java)
         } catch (_: Throwable) { null }
 
+    // Cached reflection for the NotificationManager-side queries. These are
+    // called from the UI (settings screen diagnostics) and — critically —
+    // hasPromotableCharacteristics ran getMethod() on EVERY built speed
+    // notification during the per-tick eligibility debug check below.
+    private val canPostPromotedMethod: java.lang.reflect.Method? =
+        try {
+            NotificationManager::class.java.getMethod("canPostPromotedNotifications")
+        } catch (_: Throwable) { null }
+
+    private val hasPromotableCharacteristicsMethod: java.lang.reflect.Method? =
+        try {
+            Notification::class.java.getMethod("hasPromotableCharacteristics")
+        } catch (_: Throwable) { null }
+
     fun createNotificationChannel(context: Context) {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
             try {
@@ -91,8 +105,8 @@ object NotificationHelper {
     fun canPostPromotedNotifications(context: Context): Boolean {
         if (Build.VERSION.SDK_INT < 36) return false
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as? NotificationManager ?: return false
+        val method = canPostPromotedMethod ?: return true
         return try {
-            val method = manager.javaClass.getMethod("canPostPromotedNotifications")
             (method.invoke(manager) as? Boolean) ?: true
         } catch (_: Throwable) {
             true
@@ -105,8 +119,8 @@ object NotificationHelper {
      */
     fun hasPromotableCharacteristics(notification: Notification): Boolean {
         if (Build.VERSION.SDK_INT < 36) return false
+        val method = hasPromotableCharacteristicsMethod ?: return true
         return try {
-            val method = notification.javaClass.getMethod("hasPromotableCharacteristics")
             (method.invoke(notification) as? Boolean) ?: true
         } catch (_: Throwable) {
             true
@@ -145,8 +159,8 @@ object NotificationHelper {
         val dlFormatted = SpeedFormatter.formatSpeed(snapshot.downloadBytesPerSec, settings.speedUnit)
         val ulFormatted = SpeedFormatter.formatSpeed(snapshot.uploadBytesPerSec, settings.speedUnit)
 
-        val thresholdBytes = settings.idleThresholdKbps * 1024L
-        val isBelowThreshold = settings.idleThresholdKbps > 0 && (snapshot.downloadBytesPerSec + snapshot.uploadBytesPerSec) < thresholdBytes
+        val thresholdBytes = settings.idleThresholdKbPerSec * 1024L
+        val isBelowThreshold = settings.idleThresholdKbPerSec > 0 && (snapshot.downloadBytesPerSec + snapshot.uploadBytesPerSec) < thresholdBytes
 
         // ============================================================
         // HIDE-WHEN-IDLE MODE: When the user has enabled "Hide
@@ -370,13 +384,6 @@ object NotificationHelper {
                 .build()
         }
 
-        if (Build.VERSION.SDK_INT >= 36) {
-            try {
-                val isEligible = hasPromotableCharacteristics(notification)
-                Log.d(TAG, "Notification promotable characteristics check: $isEligible")
-            } catch (_: Throwable) {}
-        }
-
         return notification
     }
 
@@ -510,13 +517,22 @@ object NotificationHelper {
      *
      * The base canvas size is 96x96 (matches DynamicSpeedIconRenderer.ICON_SIZE) so the
      * SMALL / NORMAL / LARGE visual size is consistent between dynamic and static icons.
+     *
+     * The result is CACHED per (resource, scale): the speed notification is rebuilt up to
+     * once per second and re-allocating a fresh ARGB_8888 bitmap each rebuild was pure GC
+     * churn — the scaled static icon depends only on the resource id and the scale, both
+     * of which change only via settings.
      */
+    private val scaledIconCache = java.util.concurrent.ConcurrentHashMap<Int, android.graphics.drawable.Icon>()
+
     private fun createScaledIcon(
         context: Context,
         drawableRes: Int,
         scale: NotificationIconScale
     ): android.graphics.drawable.Icon? {
         if (scale == NotificationIconScale.NORMAL) return null // Use the resource directly for normal size
+        val cacheKey = drawableRes * 31 + scale.ordinal
+        scaledIconCache[cacheKey]?.let { return it }
         return try {
             val drawable = androidx.core.content.ContextCompat.getDrawable(context, drawableRes) ?: return null
             val baseSize = 96
@@ -525,7 +541,9 @@ object NotificationHelper {
             val canvas = android.graphics.Canvas(bitmap)
             drawable.setBounds(0, 0, scaledSize, scaledSize)
             drawable.draw(canvas)
-            android.graphics.drawable.Icon.createWithBitmap(bitmap)
+            android.graphics.drawable.Icon.createWithBitmap(bitmap).also {
+                scaledIconCache[cacheKey] = it
+            }
         } catch (_: Throwable) {
             null
         }

@@ -190,47 +190,73 @@ class TrafficMonitorMathTest {
     }
 
     /**
-     * Adaptive idle sampling contract, expressed as the delay decision the
-     * monitor makes each tick (mirrors computeDelayMs' three-way switch):
+     * Adaptive idle ladder contract, expressed as the delay decision the
+     * monitor makes each tick (mirrors computeDelayMs + the idle-counter
+     * update in sampleTrafficLocked):
      * - user cadence while traffic flows or during the first ~30 silent ticks
-     *   (the Stuck-Detector idle notification still refreshes at its own
-     *   cadence in this window)
-     * - stretched 5s cadence only after sustained pure silence
-     * - instantly back to user cadence once bytes arrive again.
+     * - 15s after ~30s of sustained silence
+     * - 60s after ~10 more silent 15s ticks
+     * - 120s after ~10 more silent 60s ticks
+     * - instantly back to user cadence once ANY byte arrives again.
      */
     @Test
-    fun `adaptive idle sampling stretches only after sustained silence`() {
+    fun `adaptive idle ladder stretches only after sustained silence`() {
         val userIntervalMs = 1000L
         val idleStretchThreshold = 30
-        val idleSamplingMs = 5_000L
+        val idleSamplingMs = 15_000L
+        val deepIdleTicks = 10
+        val deepSamplingMs = 60_000L
+        val ultraSamplingMs = 120_000L
 
-        fun delayFor(ticksSilent: Int, bytesThisTick: Long): Pair<Long, Int> {
-            // mirror of the monitor's state machine
-            val nextSilent = if (bytesThisTick == 0L) ticksSilent + 1 else 0
-            val delay = when {
-                nextSilent >= idleStretchThreshold -> idleSamplingMs
+        // Exact mirror of TrafficMonitor's idle state machine.
+        var idleTickCount = 0
+        var deepIdleTickCount = 0
+        var isUltraIdle = false
+
+        fun nextTick(bytesThisTick: Long): Long {
+            if (bytesThisTick == 0L) {
+                idleTickCount++
+                if (idleTickCount >= idleStretchThreshold) {
+                    deepIdleTickCount++
+                    if (deepIdleTickCount >= deepIdleTicks + deepIdleTicks) {
+                        isUltraIdle = true
+                    }
+                }
+            } else {
+                idleTickCount = 0
+                deepIdleTickCount = 0
+                isUltraIdle = false
+            }
+            return when {
+                isUltraIdle -> ultraSamplingMs
+                deepIdleTickCount >= deepIdleTicks -> deepSamplingMs
+                idleTickCount >= idleStretchThreshold -> idleSamplingMs
                 else -> userIntervalMs
             }
-            return delay to nextSilent
         }
 
-        // First ~30 silent ticks: still the user's 1s cadence.
-        var silent = 0
-        for (i in 1..29) {
-            val (delay, next) = delayFor(silent, bytesThisTick = 0L)
-            assertEquals(userIntervalMs, delay)
-            silent = next
+        // First 29 silent ticks: still the user's 1s cadence.
+        repeat(29) {
+            assertEquals(userIntervalMs, nextTick(bytesThisTick = 0L))
         }
-        // 30th silent tick crosses the threshold -> stretched cadence.
-        val (stretched, silent2) = delayFor(silent, bytesThisTick = 0L)
-        assertEquals(idleSamplingMs, stretched)
-        // One byte arriving anywhere resets to the user cadence immediately.
-        val (resumed, silent3) = delayFor(silent2, bytesThisTick = 1L)
-        assertEquals(userIntervalMs, resumed)
-        assertEquals(0, silent3)
+        // 30th silent tick crosses the threshold -> 15s stretched cadence.
+        assertEquals(idleSamplingMs, nextTick(bytesThisTick = 0L))
+        // 10 more silent 15s ticks (~2.5 min) -> 60s DEEP cadence.
+        repeat(deepIdleTicks) {
+            nextTick(bytesThisTick = 0L)
+        }
+        assertEquals(deepSamplingMs, nextTick(bytesThisTick = 0L))
+        // 10 more silent 60s ticks (~10 min) -> 120s ULTRA cadence.
+        repeat(deepIdleTicks) {
+            nextTick(bytesThisTick = 0L)
+        }
+        assertEquals(ultraSamplingMs, nextTick(bytesThisTick = 0L))
+        // Stays at ULTRA while silence persists.
+        assertEquals(ultraSamplingMs, nextTick(bytesThisTick = 0L))
+        // One byte arriving anywhere resets the whole ladder immediately.
+        assertEquals(userIntervalMs, nextTick(bytesThisTick = 1L))
         // And silence re-accumulates from scratch after the reset.
-        val (stillUser, _) = delayFor(silent3, bytesThisTick = 0L)
-        assertEquals(userIntervalMs, stillUser)
+        assertEquals(userIntervalMs, nextTick(bytesThisTick = 0L))
     }
 
     /**
